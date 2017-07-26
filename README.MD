@@ -35,5 +35,9 @@ this is sample json of API list
 }
 ```
 
+The scheduler used Firebase JobDispatcher
+
+```https://github.com/firebase/firebase-jobdispatcher-android```
+
 
 The json result will be saved to file in android storage. When the file is exist json reader will read the file and parse based on json properties given.
