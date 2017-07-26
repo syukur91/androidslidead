@@ -130,4 +130,40 @@ public class JsonHelper {
 
     }
 
+    public static void saveJsonLocal(Context ctx){
+
+        try {
+            // Creates a file in the primary external storage space of the
+            // current application.
+            // If the file does not exists, it is created.
+            String str = "{\"images\":[{\"id\":1,\"title\":\"House of Cards\",\"author\":\"typicode\",\"imageurl\":\"http://cdn3.nflximg.net/images/3093/2043093.jpg\"},{\"id\":2,\"title\":\"Hannibal\",\"author\":\"typicode\",\"imageurl\":\"http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg\"},{\"id\":3,\"title\":\"Game of Thrones\",\"author\":\"typicode\",\"imageurl\":\"http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg\"},{\"id\":4,\"title\":\"Big Bang Theory\",\"author\":\"typicode\",\"imageurl\":\"http://tvfiles.alphacoders.com/100/hdclearart-10.png\"}]}";
+            HttpHandler sh = new HttpHandler();
+            // Making a request to url and getting response
+            File testFile = new File(ctx.getExternalFilesDir(null), "TestFile.txt");
+
+
+            if(testFile.exists())
+                testFile.delete();
+
+            if (!testFile.exists())
+                testFile.createNewFile();
+
+            // Adds a line to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(testFile, true /*append*/));
+            writer.write(str);
+            writer.close();
+            // Refresh the data so it can seen when the device is plugged in a
+            // computer. You may have to unplug and replug the device to see the
+            // latest changes. This is not necessary if the user should not modify
+            // the files.
+            MediaScannerConnection.scanFile(ctx,
+                    new String[]{testFile.toString()},
+                    null,
+                    null);
+        } catch (IOException e) {
+            Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
+        }
+
+    }
+
 }

@@ -46,6 +46,9 @@ public class MainActivity extends AppCompatActivity implements BaseSliderView.On
         setContentView(R.layout.activity_main);
         //scheduleJob();
 
+        JsonHelper.saveJsonLocal(this);
+
+
         String content = JsonHelper.readJson(this);
         // implement slider
         mDemoSlider = (SliderLayout)findViewById(R.id.slider);
