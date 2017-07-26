@@ -39,7 +39,7 @@ The scheduler used Firebase JobDispatcher
 
 ```https://github.com/firebase/firebase-jobdispatcher-android```
 
-The prosedure is scheduler will run every several hour, if condition inside startjob event meet `current_time` == `03.00 AM` then scheduler will retrieve new List of url image  
+The scheduler will run every several hour, if condition inside startjob  meet `current_time` == `03.00 AM` then scheduler will retrieve new List of url image.   
 
 
 The json result will be saved to file in android storage. When the file is exist json reader will read the file and parse based on json properties given.
