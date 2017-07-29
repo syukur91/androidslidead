@@ -1,5 +1,6 @@
 package com.slidead.app.slidead;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,8 +18,13 @@ import com.slidead.app.slidead.helpers.SchedulerHelper;
 
 
 import java.io.File;
+import android.text.format.Time;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +37,7 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 
-public class MainActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener,
+public class MainActivity extends Activity implements BaseSliderView.OnSliderClickListener,
         ViewPagerEx.OnPageChangeListener {
 
     private SliderLayout mDemoSlider;

@@ -20,6 +20,10 @@ import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.slidead.app.slidead.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class SchedulerHelper extends JobService {
 
 
@@ -30,8 +34,14 @@ public class SchedulerHelper extends JobService {
         Toast.makeText(this, R.string.job_started, Toast.LENGTH_LONG).show();
 //        final String url = "http://cdn3.nflximg.net/images/3093/2043093.jpg";
 //        DownloadHelper.downloadImage(url,this);
-        UrlGetterHelper parser = new UrlGetterHelper(this);
-        parser.execute();
+        DateFormat df = new SimpleDateFormat("HH");
+        String hour = df.format(Calendar.getInstance().getTime());
+
+        int clock = Integer.parseInt(hour);
+        if(clock == 3 || clock >= 3){
+            UrlGetterHelper parser = new UrlGetterHelper(this);
+            parser.execute();
+        }
         return false; // Answers the question: "Is there still work going on?"
     }
 
