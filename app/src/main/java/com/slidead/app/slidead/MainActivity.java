@@ -1,11 +1,13 @@
 package com.slidead.app.slidead;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
+import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -16,36 +18,19 @@ import com.firebase.jobdispatcher.Trigger;
 import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
 
-
-import java.io.File;
-import android.text.format.Time;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
-import static android.R.attr.value;
-
-import com.daimajia.slider.library.Animations.DescriptionAnimation;
-import com.daimajia.slider.library.SliderLayout;
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import static com.slidead.app.slidead.R.id.slider;
 
 public class MainActivity extends Activity implements BaseSliderView.OnSliderClickListener,
         ViewPagerEx.OnPageChangeListener {
 
     private SliderLayout mDemoSlider;
-
-
     ArrayList<HashMap<String, String>> urlList ;
     ArrayList<String> linkList;
-
+    int mProgress = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +42,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
         String content = JsonHelper.readJson(this);
         // implement slider
-        mDemoSlider = (SliderLayout)findViewById(R.id.slider);
+        mDemoSlider = (SliderLayout)findViewById(slider);
         // and add url image with internet
         // you can see hannibal is textview
         // and url is image
@@ -87,27 +72,50 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
         // when we show slider, we must create for or while, you can add it
         for(String name : url_maps.keySet()){
-            TextSliderView textSliderView = new TextSliderView(this);
+            DefaultSliderView textSliderView = new DefaultSliderView(this);
             // initialize a SliderLayout
             textSliderView
-                    .description(name)
+                    //.description(name)
                     .image(url_maps.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.Fit)
-                    .setOnSliderClickListener(this);
+                    .setScaleType(BaseSliderView.ScaleType.Fit);
+
+//                    .setOnSliderClickListener(this);
 
             //add your extra information
-            textSliderView.bundle(new Bundle());
+            //textSliderView.bundle(new Bundle());
 //            textSliderView.getBundle().putString("extra",name);
 
             mDemoSlider.addSlider(textSliderView);
         }
 
+
+
         // you can change the animation, time page and anything.. read more on github
-        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+
         mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-        mDemoSlider.setCustomAnimation(new DescriptionAnimation());
-        mDemoSlider.setDuration(4000);
+        mDemoSlider.setDuration(2000);
+        mDemoSlider.setEnabled(false);
+        mDemoSlider.setClickable(false);
+//        mDemoSlider.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                if (mDemoSlider.getCurrentPosition() == 2) {
+//                    mDemoSlider.setCurrentPosition(2 - 1, false);
+//                    mDemoSlider.setCurrentPosition(2, false);
+//                    return false;
+//                }
+//                return false;
+//
+//            }
+//
+//        } );
+
+
         mDemoSlider.addOnPageChangeListener(this);
+
+
+
     }
 
 
@@ -152,6 +160,8 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         super.onStop();
     }
 
+
+
     @Override
     public void onSliderClick(BaseSliderView slider) {
 //        Toast.makeText(this,slider.getBundle().get("extra") + "",Toast.LENGTH_SHORT).show();
@@ -166,11 +176,14 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//        Toast.makeText(this,"tes",Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onPageSelected(int position) {
+
+
         Log.d("Slider Demo", "Page Changed: " + position);
     }
 

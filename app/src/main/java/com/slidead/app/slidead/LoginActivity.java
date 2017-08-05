@@ -20,8 +20,6 @@ public class LoginActivity extends Activity {
 
     public void addListenerOnButton() {
 
-        final Context context = this;
-
         button = (Button) findViewById(R.id.button1);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -29,7 +27,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View arg0) {
 
-                Intent intent = new Intent(context, MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
 
             }
