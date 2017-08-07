@@ -136,7 +136,7 @@ public class JsonHelper {
             // Creates a file in the primary external storage space of the
             // current application.
             // If the file does not exists, it is created.
-            String str = "{\"images\":[{\"id\":1,\"title\":\"House of Cards\",\"author\":\"typicode\",\"imageurl\":\"http://cdn3.nflximg.net/images/3093/2043093.jpg\"},{\"id\":2,\"title\":\"Hannibal\",\"author\":\"typicode\",\"imageurl\":\"http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg\"},{\"id\":3,\"title\":\"Game of Thrones\",\"author\":\"typicode\",\"imageurl\":\"http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg\"},{\"id\":4,\"title\":\"Big Bang Theory\",\"author\":\"typicode\",\"imageurl\":\"http://tvfiles.alphacoders.com/100/hdclearart-10.png\"}]}";
+            String str = "{\"images\":[{\"id\":1,\"title\":\"House of Cards\",\"author\":\"typicode\",\"imageurl\":\"http://cdn3.nflximg.net/images/3093/2043093.jpg\"},{\"id\":2,\"title\":\"Hannibal\",\"author\":\"typicode\",\"imageurl\":\"http://s-media-cache-ak0.pinimg.com/originals/1a/ae/74/1aae74b2bd9a5eb26df0338582978bf7.jpg\"},{\"id\":3,\"title\":\"Game of Thrones\",\"author\":\"typicode\",\"imageurl\":\"http://images.boomsbeat.com/data/images/full/19640/game-of-thrones-season-4-jpg.jpg\"},{\"id\":4,\"title\":\"Big Bang Theory\",\"author\":\"typicode\",\"imageurl\":\"http://tvfiles.alphacoders.com/100/hdclearart-10.png\"}]}";
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
             File testFile = new File(ctx.getExternalFilesDir(null), "TestFile.txt");

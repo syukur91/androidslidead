@@ -92,9 +92,9 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
         // you can change the animation, time page and anything.. read more on github
         mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
-
         mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-        mDemoSlider.setDuration(2000);
+        mDemoSlider.setDuration(4000);
+        mDemoSlider.startAutoCycle();
         mDemoSlider.setEnabled(false);
         mDemoSlider.setClickable(false);
 //        mDemoSlider.setOnTouchListener(new View.OnTouchListener() {
@@ -158,6 +158,13 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         // To prevent a memory leak on rotation, make sure to call stopAutoCycle() on the slider before activity or fragment is destroyed
         mDemoSlider.stopAutoCycle();
         super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        // To prevent a memory leak on rotation, make sure to call stopAutoCycle() on the slider before activity or fragment is destroyed
+        mDemoSlider.startAutoCycle();
+        super.onStart();
     }
 
 
