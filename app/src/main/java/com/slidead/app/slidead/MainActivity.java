@@ -1,8 +1,13 @@
 package com.slidead.app.slidead;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -16,9 +21,13 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.slidead.app.slidead.helpers.JsonHelper;
+import com.slidead.app.slidead.helpers.LocationHelper;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +44,9 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         //scheduleJob();
 
         JsonHelper.saveJsonLocal(this);
@@ -97,21 +109,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         mDemoSlider.startAutoCycle();
         mDemoSlider.setEnabled(false);
         mDemoSlider.setClickable(false);
-//        mDemoSlider.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                if (mDemoSlider.getCurrentPosition() == 2) {
-//                    mDemoSlider.setCurrentPosition(2 - 1, false);
-//                    mDemoSlider.setCurrentPosition(2, false);
-//                    return false;
-//                }
-//                return false;
-//
-//            }
-//
-//        } );
-
-
         mDemoSlider.addOnPageChangeListener(this);
 
 
@@ -184,6 +181,10 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 //        Toast.makeText(this,"tes",Toast.LENGTH_SHORT).show();
+
+
+
+
 
     }
 

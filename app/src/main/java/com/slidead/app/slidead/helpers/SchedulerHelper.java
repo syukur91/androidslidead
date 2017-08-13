@@ -5,6 +5,7 @@ package com.slidead.app.slidead.helpers;
  * Scheduler to download API list
  */
 import android.content.Context;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -23,6 +24,8 @@ import com.slidead.app.slidead.R;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SchedulerHelper extends JobService {
 
@@ -34,14 +37,31 @@ public class SchedulerHelper extends JobService {
         Toast.makeText(this, R.string.job_started, Toast.LENGTH_LONG).show();
 //        final String url = "http://cdn3.nflximg.net/images/3093/2043093.jpg";
 //        DownloadHelper.downloadImage(url,this);
-        DateFormat df = new SimpleDateFormat("HH");
-        String hour = df.format(Calendar.getInstance().getTime());
 
-        int clock = Integer.parseInt(hour);
-        if(clock == 3 || clock >= 3){
-            UrlGetterHelper parser = new UrlGetterHelper(this);
-            parser.execute();
+        LocationHelper loc = new LocationHelper();
+        HashMap<String,String> alt = loc.getLocation(this);
+        String latitu = "";
+        String longitu = "";
+
+        for (Map.Entry<String, String> entrySet : alt.entrySet()) {
+            String key = entrySet.getKey();
+            String value = entrySet.getValue();
+            if(key == "latitude") {
+                latitu = value;
+            }
+            if(key == "longitude") {
+                longitu = value;
+            }
         }
+
+        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
+
+
+//        int clock = Integer.parseInt(hour);
+//        if(clock == 3 || clock >= 3){
+//            UrlGetterHelper parser = new UrlGetterHelper(this);
+//            parser.execute();
+//        }
         return false; // Answers the question: "Is there still work going on?"
     }
 
