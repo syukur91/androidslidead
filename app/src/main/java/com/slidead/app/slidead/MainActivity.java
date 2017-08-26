@@ -46,7 +46,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         setContentView(R.layout.activity_main);
 
 
-
+        //String address = LocationHelper.getCompleteAddressString(this,"-6.8771694","107.6011578");
         //scheduleJob();
 
         JsonHelper.saveJsonLocal(this);
