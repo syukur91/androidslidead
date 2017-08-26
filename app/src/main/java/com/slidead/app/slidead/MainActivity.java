@@ -24,6 +24,8 @@ import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,8 +48,12 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         setContentView(R.layout.activity_main);
 
 
-        //String address = LocationHelper.getCompleteAddressString(this,"-6.8771694","107.6011578");
-        //scheduleJob();
+//        //Usage of get location address and set to location json object
+//        String address = LocationHelper.getLocalityAddressString(this,"-6.8771694","107.6011578");
+//        JSONObject locationObject = LocationHelper.setLocationObject("-6.8771694","107.6011578",address);
+
+//        //Usage of scheduled job
+//        scheduleJob();
 
         JsonHelper.saveJsonLocal(this);
 

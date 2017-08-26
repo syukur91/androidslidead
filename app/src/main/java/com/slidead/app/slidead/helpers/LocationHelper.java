@@ -1,13 +1,12 @@
 package com.slidead.app.slidead.helpers;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Build;
-import android.support.v4.app.ActivityCompat;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,11 +51,42 @@ public class LocationHelper extends Activity {
             if (addresses != null) {
                 Address returnedAddress = addresses.get(0);
                 StringBuilder strReturnedAddress = new StringBuilder("");
-
                 for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
-                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append(" ");
                 }
                 strAdd = strReturnedAddress.toString();
+            } else {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strAdd;
+    }
+
+    public static JSONObject setLocationObject(String LATITUDE, String LONGITUDE, String ADRESSLINE){
+
+        JSONObject location = new JSONObject();
+        try {
+            location.put("latitude", LATITUDE);
+            location.put("longitude", LONGITUDE);
+            location.put("address", ADRESSLINE);
+            return location;
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public static String getLocalityAddressString(Context ctx ,String LATITUDE, String LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(ctx, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(Double.parseDouble(LATITUDE), Double.parseDouble(LONGITUDE), 1);
+            if (addresses != null) {
+                String locality = addresses.get(0).getLocality();
+                strAdd = locality.toString();
             } else {
             }
         } catch (Exception e) {
