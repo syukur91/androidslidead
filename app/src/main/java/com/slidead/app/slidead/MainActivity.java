@@ -2,9 +2,11 @@ package com.slidead.app.slidead;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,12 +22,15 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
+import com.slidead.app.slidead.helpers.HttpHandler;
 import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
+import com.slidead.app.slidead.helpers.PostClass;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -55,7 +60,29 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 //        //Usage of scheduled job
 //        scheduleJob();
 
+//        LocationHelper loc = new LocationHelper();
+//        HashMap<String,String> alt = loc.getLocation(this);
+//        String latitu = "";
+//        String longitu = "";
+//
+//        for (Map.Entry<String, String> entrySet : alt.entrySet()) {
+//            String key = entrySet.getKey();
+//            String value = entrySet.getValue();
+//            if(key == "latitude") {
+//                latitu = value;
+//            }
+//            if(key == "longitude") {
+//                longitu = value;
+//            }
+//        }
+//
+//        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
+//
+//        new PostClass(this).execute(latitu,longitu);
+
+
         JsonHelper.saveJsonLocal(this);
+
 
 
         String content = JsonHelper.readJson(this);
@@ -69,10 +96,15 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         linkList = new ArrayList<String>();
         urlList =  JsonHelper.parseJson(this, content);
 
+        LocationHelper loc = new LocationHelper();
+        HashMap<String,String> alt = loc.getLocation(this);
+        String latitu = "";
+        String longitu = "";
+
+
         for (HashMap<String, String> object: urlList) {
             String title = "";
             String imageUrl = "";
-
             for (Map.Entry<String, String> entrySet : object.entrySet()) {
                 String key = entrySet.getKey();
                 String value = entrySet.getValue();
@@ -83,18 +115,30 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                     title = value;
                 }
             }
-
             url_maps.put(title, imageUrl);
-
         }
 
+        String path = Environment.getExternalStorageDirectory().toString()+"/loocads";
+
+        File f = new File(path);
+        File files[] = f.listFiles();
+        HashMap<String,File> file_maps = new HashMap<String, File>();
+
+
+        for (File item : files){
+            if(item.getName().contains("-1.jpg")){
+                item.delete();
+            }else{
+                file_maps.put(item.getName(),item);
+            }
+        }
         // when we show slider, we must create for or while, you can add it
-        for(String name : url_maps.keySet()){
+        for(String name : file_maps.keySet()){
             DefaultSliderView textSliderView = new DefaultSliderView(this);
             // initialize a SliderLayout
             textSliderView
                     //.description(name)
-                    .image(url_maps.get(name))
+                    .image(file_maps.get(name))
                     .setScaleType(BaseSliderView.ScaleType.Fit);
 
 //                    .setOnSliderClickListener(this);
@@ -117,6 +161,14 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         mDemoSlider.setClickable(false);
         mDemoSlider.addOnPageChangeListener(this);
 
+        
+
+
+
+//
+//        Intent refresh =new Intent(this, MainActivity.class);
+//        startActivity(refresh);
+//        overridePendingTransition(0,0);
 
 
     }

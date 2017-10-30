@@ -166,4 +166,48 @@ public class JsonHelper {
 
     }
 
+
+
+    public static ArrayList parseResponse( String str){
+
+        ArrayList<HashMap<String, String>> urlList;
+
+        urlList = new ArrayList<>();
+
+        try {
+
+//            JsonHelper.saveJson(ctx,str);
+//            JSONObject jsonObj = new JSONObject(str);
+
+            // Getting JSON Array node
+            JSONArray contacts =  new JSONArray(str);
+
+            // looping through All Contacts
+            for (int i = 0; i < contacts.length(); i++) {
+                JSONObject c = contacts.getJSONObject(i);
+
+                String id = c.getString("id");
+                String title = c.getString("campaignName");
+                String imageUrl = c.getString("imageUrl");
+                String filename = c.getString("id")+".jpg";
+
+                HashMap<String, String> list = new HashMap<>();
+
+                list.put("id", id);
+                list.put("title", title);
+                list.put("url", imageUrl);
+                list.put("filename", filename);
+
+                // adding contact to contact list
+                urlList.add(list);
+            }
+            return  urlList;
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Json parsing error: " + e.getMessage());
+            return null;
+        }
+
+    }
+
 }

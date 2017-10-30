@@ -5,11 +5,13 @@ package com.slidead.app.slidead.helpers;
  * Scheduler to download API list
  */
 import android.content.Context;
+import android.content.Intent;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.daimajia.slider.library.SliderLayout;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -19,6 +21,7 @@ import com.firebase.jobdispatcher.JobService;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
+import com.slidead.app.slidead.MainActivity;
 import com.slidead.app.slidead.R;
 
 import java.text.DateFormat;
@@ -27,7 +30,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.ContentValues.TAG;
+import static com.slidead.app.slidead.R.id.slider;
+
 public class SchedulerHelper extends JobService {
+
 
 
     @Override
@@ -38,24 +45,28 @@ public class SchedulerHelper extends JobService {
 //        final String url = "http://cdn3.nflximg.net/images/3093/2043093.jpg";
 //        DownloadHelper.downloadImage(url,this);
 
-        LocationHelper loc = new LocationHelper();
-        HashMap<String,String> alt = loc.getLocation(this);
-        String latitu = "";
-        String longitu = "";
+//        LocationHelper loc = new LocationHelper();
+//        HashMap<String,String> alt = loc.getLocation(this);
+//        String latitu = "";
+//        String longitu = "";
+//
+//        for (Map.Entry<String, String> entrySet : alt.entrySet()) {
+//            String key = entrySet.getKey();
+//            String value = entrySet.getValue();
+//            if(key == "latitude") {
+//                latitu = value;
+//            }
+//            if(key == "longitude") {
+//                longitu = value;
+//            }
+//        }
+//
+//        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
 
-        for (Map.Entry<String, String> entrySet : alt.entrySet()) {
-            String key = entrySet.getKey();
-            String value = entrySet.getValue();
-            if(key == "latitude") {
-                latitu = value;
-            }
-            if(key == "longitude") {
-                longitu = value;
-            }
-        }
 
-        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
 
+
+//         new PostClass(this).execute();
 
 //        int clock = Integer.parseInt(hour);
 //        if(clock == 3 || clock >= 3){

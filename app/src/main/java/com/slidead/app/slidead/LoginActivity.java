@@ -6,6 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.app.Activity;
+import android.widget.Toast;
+
+import com.slidead.app.slidead.helpers.LocationHelper;
+import com.slidead.app.slidead.helpers.PostClass;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends Activity {
 
