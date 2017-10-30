@@ -40,37 +40,6 @@ public class SplashActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
 
-        File dir = new File(Environment.getExternalStorageDirectory().toString()+"/loocads");
-        if (dir.exists()) {
-            try {
-                FileUtils.deleteDirectory(dir);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-
-        LocationHelper loc = new LocationHelper();
-        HashMap<String,String> alt = loc.getLocation(getApplicationContext());
-        String latitu = "";
-        String longitu = "";
-
-        for (Map.Entry<String, String> entrySet : alt.entrySet()) {
-            String key = entrySet.getKey();
-            String value = entrySet.getValue();
-            if(key == "latitude") {
-                latitu = value;
-            }
-            if(key == "longitude") {
-                longitu = value;
-            }
-        }
-
-        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
-
-        new PostClass(getApplicationContext()).execute(latitu,longitu);
-
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -78,6 +47,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
-        }, 3000L); //3000 L = 3 detik
+        }, 5000L); //3000 L = 3 detik
     }
 }

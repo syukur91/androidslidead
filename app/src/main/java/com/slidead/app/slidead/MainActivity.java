@@ -161,7 +161,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         mDemoSlider.setClickable(false);
         mDemoSlider.addOnPageChangeListener(this);
 
-        
+
 
 
 
