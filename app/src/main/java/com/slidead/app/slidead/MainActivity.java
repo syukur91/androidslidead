@@ -2,6 +2,9 @@ package com.slidead.app.slidead;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -22,6 +25,7 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
+import com.slidead.app.slidead.helpers.AlarmReceiver;
 import com.slidead.app.slidead.helpers.HttpHandler;
 import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
@@ -44,6 +48,10 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         ViewPagerEx.OnPageChangeListener {
 
     private SliderLayout mDemoSlider;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
+
+
     ArrayList<HashMap<String, String>> urlList ;
     ArrayList<String> linkList;
     int mProgress = 0;
@@ -51,6 +59,20 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+
+// Set the alarm to start at 21:32 PM
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
+        calendar.set(Calendar.MINUTE, 36);
+
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
+
 
 
 //        //Usage of get location address and set to location json object

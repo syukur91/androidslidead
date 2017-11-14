@@ -73,6 +73,9 @@ public class SchedulerHelper extends JobService {
 //            UrlGetterHelper parser = new UrlGetterHelper(this);
 //            parser.execute();
 //        }
+
+        Toast.makeText(this,"running a schedule", Toast.LENGTH_SHORT).show();
+
         return false; // Answers the question: "Is there still work going on?"
     }
 
