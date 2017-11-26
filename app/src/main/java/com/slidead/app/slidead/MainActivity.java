@@ -1,19 +1,15 @@
 package com.slidead.app.slidead;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.widget.Toast;
 
+import com.androidhiddencamera.CameraConfig;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
@@ -26,17 +22,12 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
 import com.slidead.app.slidead.helpers.AlarmReceiver;
-import com.slidead.app.slidead.helpers.HttpHandler;
+import com.slidead.app.slidead.helpers.CaptureService;
 import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
-import com.slidead.app.slidead.helpers.PostClass;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
 
-import org.json.JSONObject;
-
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -47,9 +38,11 @@ import static com.slidead.app.slidead.R.id.slider;
 public class MainActivity extends Activity implements BaseSliderView.OnSliderClickListener,
         ViewPagerEx.OnPageChangeListener {
 
+    private CameraConfig mCameraConfig;
     private SliderLayout mDemoSlider;
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
+    int TAKE_PHOTO_CODE = 0;
 
 
     ArrayList<HashMap<String, String>> urlList ;
@@ -65,7 +58,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-// Set the alarm to start at 21:32 PM
+        // Set the alarm to start at 21:32 PM
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, 20);
@@ -73,7 +66,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
 
-
+        startService(new Intent(MainActivity.this, CaptureService.class));
 
 //        //Usage of get location address and set to location json object
 //        String address = LocationHelper.getLocalityAddressString(this,"-6.8771694","107.6011578");
@@ -187,6 +180,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
 
 
+
 //
 //        Intent refresh =new Intent(this, MainActivity.class);
 //        startActivity(refresh);
@@ -229,6 +223,15 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         dispatcher.mustSchedule(myJob);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
+            Log.d("CameraDemo", "Pic saved");
+        }
+    }
+
 
     @Override
     protected void onStop() {
@@ -261,10 +264,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 //        Toast.makeText(this,"tes",Toast.LENGTH_SHORT).show();
-
-
-
-
 
     }
 

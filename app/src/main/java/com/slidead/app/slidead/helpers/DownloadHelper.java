@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Arrays;
 
 /**
@@ -77,6 +79,24 @@ public class DownloadHelper extends Activity {
 
     }
 
+    public static void saveImage(Bitmap finalBitmap) {
 
+        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+        File myDir = new File(root + "/saved_images");
+        myDir.mkdirs();
+
+        String fname = "Image-New.jpg";
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }

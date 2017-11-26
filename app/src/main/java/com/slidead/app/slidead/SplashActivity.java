@@ -53,6 +53,10 @@ public class SplashActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
 
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ){
+            ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.CAMERA}, 1);
+        }
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

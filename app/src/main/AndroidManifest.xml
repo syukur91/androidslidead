@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
@@ -13,6 +15,14 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" ></uses-permission>
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" ></uses-permission>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" ></uses-permission>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" ></uses-permission>
+
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -42,6 +52,10 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
+
+        <service android:enabled="true" android:name=".helpers.CaptureService"></service>
+
+
 
         <activity android:name=".SplashActivity" android:screenOrientation="landscape"
             >
