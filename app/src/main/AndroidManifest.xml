@@ -54,6 +54,7 @@
         </service>
 
         <service android:enabled="true" android:name=".helpers.CaptureService"></service>
+        <service android:enabled="true" android:name=".helpers.LocationMonitoringService"></service>
 
 
 

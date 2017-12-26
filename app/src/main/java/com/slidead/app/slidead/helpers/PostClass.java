@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import dmax.dialog.SpotsDialog;
+
 import static android.R.attr.progress;
 import static android.content.ContentValues.TAG;
 
@@ -35,9 +37,17 @@ import static android.content.ContentValues.TAG;
 public class PostClass extends AsyncTask<String, Void, Void> {
 
     private Context mContext;
+    private  SpotsDialog dialog;
 
     public PostClass(Context context){
         mContext = context;
+        dialog = new SpotsDialog(mContext,R.style.Custom);
+    }
+
+    protected void onPreExecute() {
+        dialog.show();
+        super.onPreExecute();
+        Log.e(TAG, "Post begin " );
     }
 
 //    private final Context context;
@@ -147,6 +157,7 @@ public class PostClass extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
         Log.e(TAG, "Json parsing completed: " );
+        dialog.dismiss();
     }
 
 }

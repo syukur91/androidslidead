@@ -1,13 +1,32 @@
 package com.slidead.app.slidead;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.os.ResultReceiver;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidhiddencamera.CameraConfig;
 import com.daimajia.slider.library.SliderLayout;
@@ -21,10 +40,13 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.slidead.app.slidead.helpers.AlarmReceiver;
 import com.slidead.app.slidead.helpers.CaptureService;
 import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
+import com.slidead.app.slidead.helpers.LocationMonitoringService;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
 
 import java.io.File;
@@ -44,6 +66,17 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     private PendingIntent alarmIntent;
     int TAKE_PHOTO_CODE = 0;
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
+    /**
+     * Code used in requesting runtime permissions.
+     */
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+
+    private boolean mAlreadyStartedService = false;
+    private TextView mMsgView;
+
 
     ArrayList<HashMap<String, String>> urlList ;
     ArrayList<String> linkList;
@@ -52,7 +85,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
@@ -67,6 +99,11 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
 
         startService(new Intent(MainActivity.this, CaptureService.class));
+        startService(new Intent(MainActivity.this, LocationMonitoringService.class));
+        registerReceiver(broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
+
+
+
 
 //        //Usage of get location address and set to location json object
 //        String address = LocationHelper.getLocalityAddressString(this,"-6.8771694","107.6011578");
@@ -177,6 +214,15 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         mDemoSlider.addOnPageChangeListener(this);
 
 
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                Intent refresh =new Intent(MainActivity.this, MainActivity.class);
+//                startActivity(refresh);
+//            }
+//        }, 5000L); //3000 L = 3 detik
+
 
 
 
@@ -189,6 +235,18 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     }
 
+
+
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Intent refresh = new Intent(MainActivity.this, MainActivity.class);
+            startActivity(refresh);//Start the same Activity
+            finish(); //finish Activity.
+        }
+    };
 
     private void scheduleJob() {
         Bundle myExtrasBundle = new Bundle();
@@ -226,7 +284,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
             Log.d("CameraDemo", "Pic saved");
         }
@@ -269,8 +326,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageSelected(int position) {
-
-
         Log.d("Slider Demo", "Page Changed: " + position);
     }
 
@@ -279,4 +334,10 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     }
 
+
+
+
 }
+
+
+
