@@ -1,31 +1,12 @@
 package com.slidead.app.slidead;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
-import android.widget.Toast;
-
-import com.slidead.app.slidead.helpers.AlarmReceiver;
-import com.slidead.app.slidead.helpers.LocationHelper;
-import com.slidead.app.slidead.helpers.PostClass;
-
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SplashActivity extends AppCompatActivity {
 

@@ -1,28 +1,19 @@
 package com.slidead.app.slidead;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.app.Activity;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.slidead.app.slidead.helpers.ImageDownloader;
 import com.slidead.app.slidead.helpers.LocationHelper;
-import com.slidead.app.slidead.helpers.PostClass;
+import com.slidead.app.slidead.helpers.PlaylistDownloader;
 
 import org.apache.commons.io.FileUtils;
 
@@ -30,7 +21,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import dmax.dialog.SpotsDialog;
 
@@ -39,12 +29,14 @@ public class LoginActivity extends Activity {
     Button button;
     private FirebaseAuth auth;
     private SpotsDialog dialog;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
 
         File dir = new File(Environment.getExternalStorageDirectory().toString()+"/loocads");
         if (dir.exists()) {
@@ -53,9 +45,7 @@ public class LoginActivity extends Activity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
-
 
         LocationHelper loc = new LocationHelper();
         HashMap<String,String> alt = loc.getLocation(getApplicationContext());
@@ -76,9 +66,29 @@ public class LoginActivity extends Activity {
         Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
 
 
-        AsyncTask<String,Void, Void> task =new PostClass(LoginActivity.this);
+        editor.putString("latitude", latitu);
+        editor.putString("longitude", longitu);
+        editor.commit();
 
-        task.execute(latitu,longitu);
+        String latitude=pref.getString("latitude", null);
+        String longitude=pref.getString("longitude", null);
+//        Toast.makeText(this,"Shared preference saved", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,"Shared preference key1:" + latitude + " key2: "+ longitude, Toast.LENGTH_SHORT).show();
+
+
+//        editor.remove("latitude"); // will delete key key_name3
+//        editor.remove("longitude"); // will delete key key_name4
+//        editor.commit();
+//        Toast.makeText(this,"Shared preference deleted", Toast.LENGTH_SHORT).show();
+
+        AsyncTask<String,Void, Void> playlistTask =new PlaylistDownloader(LoginActivity.this);
+
+        playlistTask.execute(latitu,longitu);
+
+
+        AsyncTask<String,Void, Void> imageTask = new ImageDownloader(LoginActivity.this);
+
+        imageTask.execute();
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -97,48 +107,52 @@ public class LoginActivity extends Activity {
 
             @Override
             public void onClick(View arg0) {
-                String email = ((EditText)findViewById(R.id.email)).getText().toString().trim();
-                final String password = ((EditText)findViewById(R.id.password)).getText().toString().trim();
+//                String email = ((EditText)findViewById(R.id.email)).getText().toString().trim();
+//                final String password = ((EditText)findViewById(R.id.password)).getText().toString().trim();
+//
+//                if (TextUtils.isEmpty(email)) {
+//                    Toast.makeText(LoginActivity.this, "Enter email address!", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                if (TextUtils.isEmpty(password)) {
+//                    Toast.makeText(LoginActivity.this, "Enter password!", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
+//
+//                dialog = new SpotsDialog(LoginActivity.this,"Authenticating..");
+//
+//                dialog.show();
+//
+//
+//                //authenticate user
+//                auth.signInWithEmailAndPassword(email, password)
+//                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<AuthResult> task) {
+//                                // If sign in fails, display a message to the user. If sign in succeeds
+//                                // the auth state listener will be notified and logic to handle the
+//                                // signed in user can be handled in the listener.
+//                                dialog.dismiss();
+//                                if (!task.isSuccessful()) {
+//                                    // there was an error
+//                                    if (password.length() < 6) {
+//                                        ((EditText)findViewById(R.id.password)).setError(getString(R.string.minimum_password));
+//                                    } else {
+//                                        Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
+//                                    }
+//                                } else {
+//                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }
+//                            }
+//                        });
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(LoginActivity.this, "Enter email address!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(LoginActivity.this, "Enter password!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                dialog = new SpotsDialog(LoginActivity.this,"Authenticating..");
-
-                dialog.show();
-
-
-                //authenticate user
-                auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                // If sign in fails, display a message to the user. If sign in succeeds
-                                // the auth state listener will be notified and logic to handle the
-                                // signed in user can be handled in the listener.
-                                dialog.dismiss();
-                                if (!task.isSuccessful()) {
-                                    // there was an error
-                                    if (password.length() < 6) {
-                                        ((EditText)findViewById(R.id.password)).setError(getString(R.string.minimum_password));
-                                    } else {
-                                        Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-                                    }
-                                } else {
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                        });
-
+                Intent intent = new Intent(getApplicationContext(), TransitionActivity.class);
+                startActivity(intent);
+                finish();
 
             }
 

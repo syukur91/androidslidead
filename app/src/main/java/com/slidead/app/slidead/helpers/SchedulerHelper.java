@@ -66,7 +66,7 @@ public class SchedulerHelper extends JobService {
 
 
 
-//         new PostClass(this).execute();
+//         new PlaylistDownloader(this).execute();
 
 //        int clock = Integer.parseInt(hour);
 //        if(clock == 3 || clock >= 3){

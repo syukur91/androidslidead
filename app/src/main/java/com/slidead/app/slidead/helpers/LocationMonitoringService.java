@@ -7,8 +7,10 @@ package com.slidead.app.slidead.helpers;
 import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -24,7 +26,9 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import com.slidead.app.slidead.LoginActivity;
 import com.slidead.app.slidead.MainActivity;
+import com.slidead.app.slidead.TransitionActivity;
 import com.slidead.app.slidead.helpers.Constans;
 
 
@@ -47,11 +51,14 @@ public class LocationMonitoringService extends Service implements
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
 
+    SharedPreferences.Editor editor;
+
     @Override
     public void onCreate() {
         super.onCreate();
-
         intents = new Intent(ACTION_LOCATION_BROADCAST);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        editor = pref.edit();
     }
 
     @Override
@@ -73,6 +80,8 @@ public class LocationMonitoringService extends Service implements
 
         mLocationRequest.setPriority(priority);
         mLocationClient.connect();
+
+
 
         //Make it stick to the notification panel so it is less prone to get cancelled by the Operating System.
         return START_STICKY;
@@ -126,11 +135,24 @@ public class LocationMonitoringService extends Service implements
         if (location != null) {
             Log.d(TAG, "== location != null");
 
-              Log.d(TAG, "Change Latitude: "+location.getLatitude()+ " Longitude: " +location.getLongitude() );
+            Log.d(TAG, "Change Latitude: "+location.getLatitude()+ " Longitude: " +location.getLongitude() );
+
 
             Toast.makeText(this,"Location changed latitude:" + location.getLatitude() + " longitude: "+ location.getLongitude(), Toast.LENGTH_SHORT).show();
 
-            sendBroadcast(intents);
+            AsyncTask<String,Void, Void> playlistTask =new PlaylistDownloader(this);
+
+            playlistTask.execute(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
+
+
+//            sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
+
+
+//            editor.putString("latitude", String.valueOf(location.getLatitude()));
+//            editor.putString("longitude", String.valueOf(location.getLongitude()));
+//            editor.apply();
+
+           sendBroadcast(intents);
         }
     }
 
@@ -139,9 +161,9 @@ public class LocationMonitoringService extends Service implements
         Log.d(TAG, "Sending info...");
 
         Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
-        intent.putExtra(EXTRA_LATITUDE, lat);
-        intent.putExtra(EXTRA_LONGITUDE, lng);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+        intents.putExtra(EXTRA_LATITUDE, lat);
+        intents.putExtra(EXTRA_LONGITUDE, lng);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intents);
     }
 
     @Override

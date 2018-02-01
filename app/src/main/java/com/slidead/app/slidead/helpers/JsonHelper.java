@@ -6,6 +6,7 @@ package com.slidead.app.slidead.helpers;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
+import android.os.Environment;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -34,6 +35,8 @@ public class JsonHelper {
             // If the file does not exists, it is created.
             HttpHandler sh = new HttpHandler();
             // Making a request to url and getting response
+//            File testFile = new File(ctx.getExternalFilesDir(null), "TestFile.txt");
+
             File testFile = new File(ctx.getExternalFilesDir(null), "TestFile.txt");
 
             if(testFile.exists())
@@ -96,26 +99,27 @@ public class JsonHelper {
 
         try {
 
-            JsonHelper.saveJson(ctx,str);
-            JSONObject jsonObj = new JSONObject(str);
+//            JsonHelper.saveJson(ctx,str);
+//            JSONObject jsonObj = new JSONObject(str);
 
             // Getting JSON Array node
-            JSONArray contacts = jsonObj.getJSONArray("images");
+//            JSONArray contacts = jsonObj.getJSONArray("images");
+
+            JSONArray contacts = new JSONArray(str);
+
 
             // looping through All Contacts
             for (int i = 0; i < contacts.length(); i++) {
                 JSONObject c = contacts.getJSONObject(i);
 
                 String id = c.getString("id");
-                String title = c.getString("title");
-                String author = c.getString("author");
-                String imageurl = c.getString("imageurl");
+                String title = c.getString("campaignName");
+                String imageurl = c.getString("imageUrl");
 
                 HashMap<String, String> list = new HashMap<>();
 
                 list.put("id", id);
                 list.put("title", title);
-                list.put("author", author);
                 list.put("url", imageurl);
 
                // adding contact to contact list

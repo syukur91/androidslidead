@@ -34,25 +34,25 @@ import static android.content.ContentValues.TAG;
  * Created by Syukur on 10/29/2017.
  */
 
-public class PostClass extends AsyncTask<String, Void, Void> {
+public class PlaylistDownloader extends AsyncTask<String, Void, Void> {
 
     private Context mContext;
     private  SpotsDialog dialog;
 
-    public PostClass(Context context){
+    public PlaylistDownloader(Context context){
         mContext = context;
-        dialog = new SpotsDialog(mContext,R.style.Custom);
+        dialog = new SpotsDialog(mContext,R.style.API);
     }
 
     protected void onPreExecute() {
-        dialog.show();
+//        dialog.show();
         super.onPreExecute();
         Log.e(TAG, "Post begin " );
     }
 
 //    private final Context context;
 //
-//    public PostClass(Context c){
+//    public PlaylistDownloader(Context c){
 //
 //        this.context = c;
 ////            this.error = status;
@@ -78,7 +78,6 @@ public class PostClass extends AsyncTask<String, Void, Void> {
             jsonObject.put("latitude",Double.parseDouble(latitude));
             jsonObject.put("longitude",Double.parseDouble(longitude));
 
-
             DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
             wr.writeBytes(jsonObject.toString());
             wr.flush();
@@ -100,48 +99,8 @@ public class PostClass extends AsyncTask<String, Void, Void> {
 
             output.append(System.getProperty("line.separator") + "Response " + System.getProperty("line.separator") + System.getProperty("line.separator") + responseOutput.toString());
             urlList =  JsonHelper.parseResponse(responseOutput.toString());
+            JsonHelper.saveJson(mContext, responseOutput.toString());
             Log.e(TAG, "Json parsing completed: " + responseOutput);
-
-            if(urlList.size() == 0){
-
-                DownloadHelper.downloadImage("http://cdn3.nflximg.net/images/3093/2043093.jpg","tes",mContext);
-
-            }else{
-
-                for (HashMap<String, String> object: urlList) {
-                    String title = "";
-                    String imageUrl = "";
-                    String id = "";
-
-
-                    for (Map.Entry<String, String> entrySet : object.entrySet()) {
-                        String key = entrySet.getKey();
-                        String value = entrySet.getValue();
-                        if(key == "url") {
-                            imageUrl = value;
-                        }
-                        if(key == "title") {
-                            title = value;
-                        }
-                        if(key == "id") {
-                            id = value;
-                        }
-
-                        if(imageUrl != ""){
-                            DownloadHelper.downloadImage(imageUrl,id,mContext);
-                        }
-
-                    }
-
-                    Log.e(TAG, "Json parsing completed: " + title);
-
-                }
-
-
-            }
-
-
-
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -157,7 +116,7 @@ public class PostClass extends AsyncTask<String, Void, Void> {
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
         Log.e(TAG, "Json parsing completed: " );
-        dialog.dismiss();
+//        dialog.dismiss();
     }
 
 }

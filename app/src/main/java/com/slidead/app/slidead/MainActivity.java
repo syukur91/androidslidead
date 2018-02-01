@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -102,6 +103,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         startService(new Intent(MainActivity.this, LocationMonitoringService.class));
         registerReceiver(broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
 
+        cleanDuplicateImage();
 
 
 
@@ -130,10 +132,13 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 //
 //        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
 //
-//        new PostClass(this).execute(latitu,longitu);
+//        new PlaylistDownloader(this).execute(latitu,longitu);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        String latitude=pref.getString("latitude", null);
+        String longitude=pref.getString("longitude", null);
+        Toast.makeText(this,"Shared preference key1:" + latitude + " key2: "+ longitude, Toast.LENGTH_SHORT).show();
 
-
-        JsonHelper.saveJsonLocal(this);
+//        JsonHelper.saveJsonLocal(this);
 
 
 
@@ -235,9 +240,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     }
 
-
-
-
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -255,42 +257,66 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
             File f = new File(path);
             File files[] = f.listFiles();
 
+            File testFile = new File(context.getExternalFilesDir(null), "TestFile.txt");
 
+            if(testFile.exists()){
 
+                String content = JsonHelper.readJson(context);
+                mDemoSlider = (SliderLayout)findViewById(slider);
+                HashMap<String,String> url_maps = new HashMap<String, String>();
+                linkList = new ArrayList<String>();
+                urlList =  JsonHelper.parseJson(context, content);
 
-            for (File item : files){
-                if(item.getName().contains("-1.jpg")){
-                    item.delete();
-                }else{
-                    file_maps.put(item.getName(),item);
+                for (HashMap<String, String> object: urlList) {
+                    String title = "";
+                    String name = "";
+                    for (Map.Entry<String, String> entrySet : object.entrySet()) {
+                        String key = entrySet.getKey();
+                        String value = entrySet.getValue();
+                        if(key == "id") {
+                            name = value;
+                        }
+                        if(key == "title") {
+                            title = value;
+                        }
+                    }
+                    url_maps.put(title, name);
                 }
+
+
+                for (File item : files){
+                    if(item.getName().contains("-1.jpg")){
+                        item.delete();
+                    }else{
+                        file_maps.put(item.getName(),item);
+                    }
+                }
+
+
+
+                // when we show slider, we must create for or while, you can add it
+                for(String name : url_maps.keySet()){
+                    DefaultSliderView textSliderView = new DefaultSliderView(MainActivity.this);
+                    File file = new File(Environment.getExternalStorageDirectory() +"/loocads", url_maps.get(name)+".jpg");
+                    // initialize a SliderLayout
+                    textSliderView
+                            //.description(name)
+                            .image(file)
+                            .setScaleType(BaseSliderView.ScaleType.Fit);
+                    mDemoSlider.addSlider(textSliderView);
+                }
+
+                // you can change the animation, time page and anything.. read more on github
+                mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+                mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+                mDemoSlider.setDuration(4000);
+                mDemoSlider.startAutoCycle();
+                mDemoSlider.setEnabled(false);
+                mDemoSlider.setClickable(false);
+                mDemoSlider.addOnPageChangeListener(MainActivity.this);
+
             }
-            // when we show slider, we must create for or while, you can add it
-            for(String name : file_maps.keySet()){
-                DefaultSliderView textSliderView = new DefaultSliderView(MainActivity.this);
-                // initialize a SliderLayout
-                textSliderView
-                        //.description(name)
-                        .image(file_maps.get(name))
-                        .setScaleType(BaseSliderView.ScaleType.Fit);
 
-//                    .setOnSliderClickListener(this);
-
-                //add your extra information
-                //textSliderView.bundle(new Bundle());
-//            textSliderView.getBundle().putString("extra",name);
-
-                mDemoSlider.addSlider(textSliderView);
-            }
-
-            // you can change the animation, time page and anything.. read more on github
-            mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
-            mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-            mDemoSlider.setDuration(4000);
-            mDemoSlider.startAutoCycle();
-            mDemoSlider.setEnabled(false);
-            mDemoSlider.setClickable(false);
-            mDemoSlider.addOnPageChangeListener(MainActivity.this);
         }
     };
 
@@ -325,6 +351,20 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                 .build();
 
         dispatcher.mustSchedule(myJob);
+    }
+
+    private void cleanDuplicateImage(){
+
+        String path = Environment.getExternalStorageDirectory().toString()+"/loocads";
+        File f = new File(path);
+        File files[] = f.listFiles();
+
+        for (File item : files){
+            if(item.getName().contains("-1.jpg")){
+                item.delete();
+            }
+        }
+
     }
 
     @Override
