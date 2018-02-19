@@ -3,10 +3,14 @@ package com.slidead.app.slidead;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.slidead.app.slidead.helpers.DownloadHelper;
+import com.slidead.app.slidead.helpers.ImageDownloader;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -44,6 +48,15 @@ public class SplashActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.CAMERA}, 1);
         }
 
+        boolean isLatest = DownloadHelper.verifyLatestDownload(this);
+
+        if(!isLatest){
+            AsyncTask<String,Void, Void> imageTask = new ImageDownloader(SplashActivity.this);
+            imageTask.execute();
+        }
+
+
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -51,6 +64,6 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 finish();
             }
-        }, 5000L); //3000 L = 3 detik
+        }, 8000L); //3000 L = 3 detik
     }
 }

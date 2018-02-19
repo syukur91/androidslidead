@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.slidead.app.slidead.helpers.DownloadHelper;
 import com.slidead.app.slidead.helpers.ImageDownloader;
 import com.slidead.app.slidead.helpers.LocationHelper;
 import com.slidead.app.slidead.helpers.PlaylistDownloader;
@@ -38,14 +39,14 @@ public class LoginActivity extends Activity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
-        File dir = new File(Environment.getExternalStorageDirectory().toString()+"/loocads");
-        if (dir.exists()) {
-            try {
-                FileUtils.deleteDirectory(dir);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        File dir = new File(Environment.getExternalStorageDirectory().toString()+"/loocads");
+//        if (dir.exists()) {
+//            try {
+//                FileUtils.deleteDirectory(dir);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         LocationHelper loc = new LocationHelper();
         HashMap<String,String> alt = loc.getLocation(getApplicationContext());
@@ -86,9 +87,10 @@ public class LoginActivity extends Activity {
         playlistTask.execute(latitu,longitu);
 
 
-        AsyncTask<String,Void, Void> imageTask = new ImageDownloader(LoginActivity.this);
+//        AsyncTask<String,Void, Void> imageTask = new ImageDownloader(LoginActivity.this);
+//
+//        imageTask.execute();
 
-        imageTask.execute();
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();

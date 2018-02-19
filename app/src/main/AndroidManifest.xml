@@ -65,7 +65,9 @@
 
         <receiver android:name=".helpers.AlarmReceiver" />
 
-        <activity android:name=".TransitionActivity"></activity>
+        <activity android:name=".TransitionActivity">
+
+        </activity>
     </application>
 
 </manifest>

@@ -243,6 +243,16 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+//            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+//            String latitude_pref=pref.getString("latitude", null);
+//            String longitude_pref=pref.getString("longitude", null);
+
+
+            String latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
+            String longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
+
+
+//
 
 //            Intent refresh = new Intent(MainActivity.this, MainActivity.class);
 //            startActivity(refresh);//Start the same Activity

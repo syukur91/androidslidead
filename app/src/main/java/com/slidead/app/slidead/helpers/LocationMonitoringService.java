@@ -152,6 +152,9 @@ public class LocationMonitoringService extends Service implements
 //            editor.putString("longitude", String.valueOf(location.getLongitude()));
 //            editor.apply();
 
+            intents.putExtra(EXTRA_LATITUDE, String.valueOf(location.getLatitude()));
+            intents.putExtra(EXTRA_LONGITUDE, String.valueOf(location.getLongitude()));
+
            sendBroadcast(intents);
         }
     }

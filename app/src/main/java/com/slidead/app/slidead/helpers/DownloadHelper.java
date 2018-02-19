@@ -10,8 +10,13 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * Created by Syukur on 7/22/2017.
@@ -97,6 +102,48 @@ public class DownloadHelper extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean verifyLatestDownload(Context context){
+        File directory = new File(Environment.getExternalStorageDirectory() + "/loocads");
+        File[] files = directory.listFiles();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        Log.d("Files", "Size: "+ files.length);
+        File latestFile = lastFileModified(Environment.getExternalStorageDirectory() + "/loocads");
+        String latestDownloadedDate = sdf.format(latestFile.lastModified());
+
+
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("dd");
+        String currentDate = df.format(c);
+
+
+        if (latestDownloadedDate.equals(currentDate) ){
+
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+    public static File lastFileModified(String dir) {
+        File fl = new File(dir);
+        File[] files = fl.listFiles(new FileFilter() {
+            public boolean accept(File file) {
+                return file.isFile();
+            }
+        });
+        long lastMod = Long.MIN_VALUE;
+        File choice = null;
+        for (File file : files) {
+            if (file.lastModified() > lastMod) {
+                choice = file;
+                lastMod = file.lastModified();
+            }
+        }
+        return choice;
     }
 
 }
