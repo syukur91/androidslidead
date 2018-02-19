@@ -48,12 +48,12 @@ public class SplashActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.CAMERA}, 1);
         }
 
-        boolean isLatest = DownloadHelper.verifyLatestDownload(this);
-
-        if(!isLatest){
-            AsyncTask<String,Void, Void> imageTask = new ImageDownloader(SplashActivity.this);
-            imageTask.execute();
-        }
+//        boolean isLatest = DownloadHelper.verifyLatestDownload(this);
+//
+//        if(!isLatest){
+//            AsyncTask<String,Void, Void> imageTask = new ImageDownloader(SplashActivity.this);
+//            imageTask.execute();
+//        }
 
 
 

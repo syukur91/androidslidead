@@ -87,9 +87,9 @@ public class LoginActivity extends Activity {
         playlistTask.execute(latitu,longitu);
 
 
-//        AsyncTask<String,Void, Void> imageTask = new ImageDownloader(LoginActivity.this);
-//
-//        imageTask.execute();
+        AsyncTask<String,Void, Void> imageTask = new ImageDownloader(LoginActivity.this);
+
+        imageTask.execute();
 
 
         //Get Firebase auth instance
