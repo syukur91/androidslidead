@@ -106,10 +106,20 @@ public class DownloadHelper extends Activity {
 
     public static boolean verifyLatestDownload(Context context){
         File directory = new File(Environment.getExternalStorageDirectory() + "/loocads");
+
+        if (!directory.exists()) {
+            return false;
+        }
+
+
         File[] files = directory.listFiles();
         SimpleDateFormat sdf = new SimpleDateFormat("dd");
         Log.d("Files", "Size: "+ files.length);
+        if (files.length ==0){
+            return false;
+        }
         File latestFile = lastFileModified(Environment.getExternalStorageDirectory() + "/loocads");
+
         String latestDownloadedDate = sdf.format(latestFile.lastModified());
 
 
