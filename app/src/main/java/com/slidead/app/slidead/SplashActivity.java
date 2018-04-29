@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import com.slidead.app.slidead.helpers.DownloadHelper;
 import com.slidead.app.slidead.helpers.ImageDownloader;
+import com.slidead.app.slidead.helpers.ImageListDownloader;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -48,12 +49,19 @@ public class SplashActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.CAMERA}, 1);
         }
 
-        boolean isLatest = DownloadHelper.verifyLatestDownload(this);
+//        boolean isLatest = DownloadHelper.verifyLatestDownload(this);
+//
+//        if(!isLatest){
+//            AsyncTask<String,Void, Void> imageTask = new ImageDownloader(SplashActivity.this);
+//            imageTask.execute();
+//        }
+//
 
-        if(!isLatest){
-            AsyncTask<String,Void, Void> imageTask = new ImageDownloader(SplashActivity.this);
-            imageTask.execute();
-        }
+
+
+//
+//        AsyncTask<String,Void, Void> imageTask = new ImageListDownloader(SplashActivity.this);
+//        imageTask.execute();
 
 
 

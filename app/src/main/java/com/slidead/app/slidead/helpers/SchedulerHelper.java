@@ -63,7 +63,7 @@ public class SchedulerHelper extends JobService {
 //
 //        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
 
-
+        Toast.makeText(this,"Test scheduler" , Toast.LENGTH_SHORT).show();
 
 
 //         new PlaylistDownloader(this).execute();

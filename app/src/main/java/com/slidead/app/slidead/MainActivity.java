@@ -34,6 +34,7 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.evernote.android.job.JobManager;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -45,16 +46,26 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.slidead.app.slidead.helpers.AlarmReceiver;
 import com.slidead.app.slidead.helpers.CaptureService;
+import com.slidead.app.slidead.helpers.GPSTracker;
+import com.slidead.app.slidead.helpers.ImageListDownloader;
+import com.slidead.app.slidead.helpers.JobSchedulerHelper;
 import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
 import com.slidead.app.slidead.helpers.LocationMonitoringService;
+import com.slidead.app.slidead.helpers.ImageListDownloaderService;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
+import com.slidead.app.slidead.helpers.StartAlarmService;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.slidead.app.slidead.R.id.slider;
 
@@ -66,6 +77,8 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
     int TAKE_PHOTO_CODE = 0;
+    // GPSTracker class
+    private GPSTracker gps;
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -74,73 +87,62 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
      */
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
+    android.os.Handler customHandler = new android.os.Handler();
 
     private boolean mAlreadyStartedService = false;
     private TextView mMsgView;
+    final Handler handler = new Handler();
 
 
     ArrayList<HashMap<String, String>> urlList ;
     ArrayList<String> linkList;
     int mProgress = 0;
+    AlarmReceiver alarmReceiver= new AlarmReceiver();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+//        scheduleJob();
+
+
+//        JobSchedulerHelper.schedulePeriodic();
+
+        // Set the alarm to start at 21:32 PM
+
+
+
         alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
 
-        // Set the alarm to start at 21:32 PM
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 20);
-        calendar.set(Calendar.MINUTE, 36);
-
+        calendar.set(Calendar.HOUR_OF_DAY,16);
+        calendar.set(Calendar.MINUTE, 25);
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
+
+
+        Log.d(TAG, "running a scheduler");
+
+//        startService(new Intent(MainActivity.this, PlaylistDownloadService.class));
 
         startService(new Intent(MainActivity.this, CaptureService.class));
         startService(new Intent(MainActivity.this, LocationMonitoringService.class));
         registerReceiver(broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
+//        registerReceiver(alarmReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
+
 
         cleanDuplicateImage();
 
-
-
-//        //Usage of get location address and set to location json object
-//        String address = LocationHelper.getLocalityAddressString(this,"-6.8771694","107.6011578");
-//        JSONObject locationObject = LocationHelper.setLocationObject("-6.8771694","107.6011578",address);
-
-//        //Usage of scheduled job
-//        scheduleJob();
-
-//        LocationHelper loc = new LocationHelper();
-//        HashMap<String,String> alt = loc.getLocation(this);
-//        String latitu = "";
-//        String longitu = "";
-//
-//        for (Map.Entry<String, String> entrySet : alt.entrySet()) {
-//            String key = entrySet.getKey();
-//            String value = entrySet.getValue();
-//            if(key == "latitude") {
-//                latitu = value;
-//            }
-//            if(key == "longitude") {
-//                longitu = value;
-//            }
-//        }
-//
-//        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
-//
 //        new PlaylistDownloader(this).execute(latitu,longitu);
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         String latitude=pref.getString("latitude", null);
         String longitude=pref.getString("longitude", null);
         Toast.makeText(this,"Shared preference key1:" + latitude + " key2: "+ longitude, Toast.LENGTH_SHORT).show();
-
-//        JsonHelper.saveJsonLocal(this);
-
-
 
         String content = JsonHelper.readJson(this);
         // implement slider
@@ -155,108 +157,74 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
         LocationHelper loc = new LocationHelper();
         HashMap<String,String> alt = loc.getLocation(this);
-        String latitu = "";
-        String longitu = "";
 
 
-        for (HashMap<String, String> object: urlList) {
-            String title = "";
-            String imageUrl = "";
-            for (Map.Entry<String, String> entrySet : object.entrySet()) {
-                String key = entrySet.getKey();
-                String value = entrySet.getValue();
-                if(key == "url") {
-                   imageUrl = value;
+
+// Define the code block to be executed
+         Runnable runnableCode = new Runnable() {
+            @Override
+            public void run() {
+                // Do something here on the main thread
+                Log.d("Handlers", "Called on main thread");
+                // Repeat this the same runnable code block again another 2 seconds
+                // 'this' is referencing the Runnable object
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+
+                String status=pref.getString("status", null);
+
+                if(status == null){
+                    editor.putString("status", "stop");
+                    editor.commit();
                 }
-                if(key == "title") {
-                    title = value;
+
+                Log.d("Status:", status);
+
+                if (status.equals("start")){
+
+                    editor.putString("status", "stop");
+                    editor.apply();
+
+                    Toast.makeText(MainActivity.this,"Trip stopped", Toast.LENGTH_SHORT).show();
+
+//                    Log.d("Status:", status);
+
+                }else{
+
+                    editor.putString("status", "start");
+                    editor.apply();
+//                    Log.d("Status:", status);
+                    Toast.makeText(MainActivity.this,"Trip started", Toast.LENGTH_SHORT).show();
+
+
                 }
+
+
+                handler.postDelayed(this, 5000);
             }
-            url_maps.put(title, imageUrl);
-        }
-
-//        String path = Environment.getExternalStorageDirectory().toString()+"/loocads";
-//
-//        File f = new File(path);
-//        File files[] = f.listFiles();
-//        HashMap<String,File> file_maps = new HashMap<String, File>();
-//
-//
-//        for (File item : files){
-//            if(item.getName().contains("-1.jpg")){
-//                item.delete();
-//            }else{
-//                file_maps.put(item.getName(),item);
-//            }
-//        }
-//        // when we show slider, we must create for or while, you can add it
-//        for(String name : file_maps.keySet()){
-//            DefaultSliderView textSliderView = new DefaultSliderView(this);
-//            // initialize a SliderLayout
-//            textSliderView
-//                    //.description(name)
-//                    .image(file_maps.get(name))
-//                    .setScaleType(BaseSliderView.ScaleType.Fit);
-//
-////                    .setOnSliderClickListener(this);
-//
-//            //add your extra information
-//            //textSliderView.bundle(new Bundle());
-////            textSliderView.getBundle().putString("extra",name);
-//
-//            mDemoSlider.addSlider(textSliderView);
-//        }
-//
-//
-//
-//        // you can change the animation, time page and anything.. read more on github
-//        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
-//        mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-//        mDemoSlider.setDuration(4000);
-//        mDemoSlider.startAutoCycle();
-//        mDemoSlider.setEnabled(false);
-//        mDemoSlider.setClickable(false);
-//        mDemoSlider.addOnPageChangeListener(this);
-
-
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Intent refresh =new Intent(MainActivity.this, MainActivity.class);
-//                startActivity(refresh);
-//            }
-//        }, 5000L); //3000 L = 3 detik
-
-
-
-
-
-//
-//        Intent refresh =new Intent(this, MainActivity.class);
-//        startActivity(refresh);
-//        overridePendingTransition(0,0);
-
-
+        };
+// Start the initial runnable task by posting through the handler
+        handler.post(runnableCode);
     }
+
+    private Runnable updateTimerThread = new Runnable()
+    {
+        public void run()
+        {
+
+            Toast.makeText(MainActivity.this,"Shared preference key1:", Toast.LENGTH_SHORT).show();
+            ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+            timer.scheduleAtFixedRate(updateTimerThread, 5, 5, TimeUnit.SECONDS);
+        }
+    };
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-//            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
-//            String latitude_pref=pref.getString("latitude", null);
-//            String longitude_pref=pref.getString("longitude", null);
 
 
-            String latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
-            String longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
+            String result = "";
 
-
-//
-
-//            Intent refresh = new Intent(MainActivity.this, MainActivity.class);
-//            startActivity(refresh);//Start the same Activity
-//            finish(); //finish Activity.
             HashMap<String,File> file_maps = new HashMap<String, File>();
 
             file_maps.clear();
@@ -294,6 +262,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                 }
 
 
+
                 for (File item : files){
                     if(item.getName().contains("-1.jpg")){
                         item.delete();
@@ -302,19 +271,19 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                     }
                 }
 
-
-
                 // when we show slider, we must create for or while, you can add it
                 for(String name : url_maps.keySet()){
                     DefaultSliderView textSliderView = new DefaultSliderView(MainActivity.this);
                     File file = new File(Environment.getExternalStorageDirectory() +"/loocads", url_maps.get(name)+".jpg");
                     // initialize a SliderLayout
-                    textSliderView
-                            //.description(name)
-                            .image(file)
-                            .setScaleType(BaseSliderView.ScaleType.Fit);
+                    textSliderView.image(file).setScaleType(BaseSliderView.ScaleType.Fit);
+                    textSliderView.description(file.getName());
+                    result += url_maps.get(name)+",";
                     mDemoSlider.addSlider(textSliderView);
+
                 }
+
+
 
                 // you can change the animation, time page and anything.. read more on github
                 mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
@@ -324,7 +293,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                 mDemoSlider.setEnabled(false);
                 mDemoSlider.setClickable(false);
                 mDemoSlider.addOnPageChangeListener(MainActivity.this);
-
             }
 
         }
@@ -345,7 +313,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                 // don't persist past a device reboot
                 .setLifetime(Lifetime.FOREVER)
                 // start between 0 and 90 seconds from now
-                .setTrigger(Trigger.executionWindow(0, 1))
+                .setTrigger(Trigger.executionWindow(0, 10))
                 // don't overwrite an existing job with the same tag
                 .setReplaceCurrent(false)
                 // retry with exponential backoff
@@ -355,7 +323,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                         // only run on an unmetered network
                         Constraint.ON_ANY_NETWORK
                         // only run when the device is charging
-
                 )
                 .setExtras(myExtrasBundle)
                 .build();
@@ -416,24 +383,54 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//        Toast.makeText(this,"tes",Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onPageSelected(int position) {
-        Log.d("Slider Demo", "Page Changed: " + position);
+//        Log.d("Slider Demo", "Page Changed: " + position);
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
+//
+//        if (state == 0 ) {
+////
+//                String desc =mDemoSlider.getCurrentSlider().getDescription();
+//                Log.d("Slider Demo", "File Name: " + desc);
+//                Log.d("Slider Demo", "State: " + state);
+//
+//                String played = JsonHelper.saveImagePlayed(MainActivity.this,desc);
+////                Log.d("Slider Demo", mDemoSlider.getCurrentSlider().toString());
+////
+//        }
 
+    }
+
+
+    @Override
+    protected void onResume() {
+//        IntentFilter smsFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+//        registerReceiver(alarmReceiver,smsFilter);
+        super.onResume();
+        // pause code
+    }
+
+
+    @Override
+    protected void onPause() {
+//        unregisterReceiver(alarmReceiver);
+        unregisterReceiver(broadcastReceiver);
+        super.onPause();
+        // pause code
     }
 
 
 
 
 }
+
+
 
 
 

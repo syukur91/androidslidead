@@ -71,7 +71,7 @@ public class LocationMonitoringService extends Service implements
                 .addApi(LocationServices.API)
                 .build();
 
-        mLocationRequest.setInterval(Constans.LOCATION_INTERVAL);
+//        mLocationRequest.setInterval(Constans.LOCATION_INTERVAL);
         mLocationRequest.setFastestInterval(Constans.FASTEST_LOCATION_INTERVAL);
         mLocationRequest.setSmallestDisplacement(Constans.SMALLEST_DISPLACEMENT);
         int priority = LocationRequest.PRIORITY_HIGH_ACCURACY; //by default
@@ -146,14 +146,12 @@ public class LocationMonitoringService extends Service implements
 
 
 //            sendMessageToUI(String.valueOf(location.getLatitude()),String.valueOf(location.getLongitude()));
-
-
 //            editor.putString("latitude", String.valueOf(location.getLatitude()));
 //            editor.putString("longitude", String.valueOf(location.getLongitude()));
 //            editor.apply();
 
-            intents.putExtra(EXTRA_LATITUDE, String.valueOf(location.getLatitude()));
-            intents.putExtra(EXTRA_LONGITUDE, String.valueOf(location.getLongitude()));
+//            intents.putExtra(EXTRA_LATITUDE, String.valueOf(location.getLatitude()));
+//            intents.putExtra(EXTRA_LONGITUDE, String.valueOf(location.getLongitude()));
 
            sendBroadcast(intents);
         }

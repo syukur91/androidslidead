@@ -113,11 +113,12 @@ public class DownloadHelper extends Activity {
 
 
         File[] files = directory.listFiles();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd");
-        Log.d("Files", "Size: "+ files.length);
-        if (files.length ==0){
+        if (files.length == 0){
             return false;
         }
+        SimpleDateFormat sdf = new SimpleDateFormat("dd");
+        Log.d("Files", "Size: "+ files.length);
+
         File latestFile = lastFileModified(Environment.getExternalStorageDirectory() + "/loocads");
 
         String latestDownloadedDate = sdf.format(latestFile.lastModified());
@@ -154,6 +155,20 @@ public class DownloadHelper extends Activity {
             }
         }
         return choice;
+    }
+
+    public static void cleanDuplicateImage(){
+
+        String path = Environment.getExternalStorageDirectory().toString()+"/loocads";
+        File f = new File(path);
+        File files[] = f.listFiles();
+
+        for (File item : files){
+            if(item.getName().contains("-1.jpg")){
+                item.delete();
+            }
+        }
+
     }
 
 }

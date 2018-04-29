@@ -214,4 +214,114 @@ public class JsonHelper {
 
     }
 
+    public static ArrayList parseImageListResponse( String str){
+
+        ArrayList<HashMap<String, String>> urlList;
+
+        urlList = new ArrayList<>();
+
+        try {
+
+            JSONObject jsonObj = new JSONObject(str);
+            JSONArray contacts = jsonObj.getJSONArray("result");
+
+            // looping through All Contacts
+            for (int i = 0; i < contacts.length(); i++) {
+                JSONObject c = contacts.getJSONObject(i);
+                String id = c.getString("id");
+                String title = c.getString("campaignName");
+                String imageUrl = c.getString("imageUrl");
+                String filename = c.getString("id")+".jpg";
+                HashMap<String, String> list = new HashMap<>();
+                list.put("id", id);
+                list.put("title", title);
+                list.put("url", imageUrl);
+                list.put("filename", filename);
+
+                // adding contact to contact list
+                urlList.add(list);
+            }
+            return  urlList;
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Json parsing error: " + e.getMessage());
+            return null;
+        }
+
+    }
+
+    public static String parseImageListArray(Context ctx, String str){
+
+        try {
+            JSONObject jsonObj = new JSONObject(str);
+            JSONArray contacts = jsonObj.getJSONArray("list");
+            String result = "";
+
+            // looping through All Contacts
+            for (int i = 0; i < contacts.length(); i++) {
+                String a = contacts.getString(i);
+                result += a+",";
+            }
+
+
+            File testFile = new File(ctx.getExternalFilesDir(null), "ListFile.txt");
+
+            if(testFile.exists())
+                testFile.delete();
+
+            if (!testFile.exists())
+                testFile.createNewFile();
+
+            // Adds a line to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(testFile, true /*append*/));
+            writer.write(result);
+            writer.close();
+            // Refresh the data so it can seen when the device is plugged in a
+            // computer. You may have to unplug and replug the device to see the
+            // latest changes. This is not necessary if the user should not modify
+            // the files.
+            MediaScannerConnection.scanFile(ctx, new String[]{testFile.toString()}, null, null);
+
+            return  result;
+
+        } catch (IOException e) {
+            Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
+            return null;
+        } catch (JSONException e) {
+            Log.e(TAG, "Json parsing error: " + e.getMessage());
+            return null;
+        }
+
+    }
+
+
+    public static String saveImagePlayed(Context ctx, String str){
+
+        try {
+
+
+            File testFile = new File(ctx.getExternalFilesDir(null), "ImagePlayed.txt");
+
+//            if(testFile.exists())
+//                testFile.delete();
+
+            if (!testFile.exists())
+                testFile.createNewFile();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(testFile, true /*append*/));
+            writer.write(str+",");
+            writer.close();
+            MediaScannerConnection.scanFile(ctx, new String[]{testFile.toString()}, null, null);
+
+            return  str;
+
+        } catch (IOException e) {
+            Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
+            return null;
+        }
+
+    }
+
+
+
 }

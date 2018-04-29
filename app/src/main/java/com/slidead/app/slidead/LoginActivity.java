@@ -2,6 +2,7 @@ package com.slidead.app.slidead;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,11 +13,10 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.slidead.app.slidead.helpers.DownloadHelper;
+import com.slidead.app.slidead.helpers.GPSTracker;
 import com.slidead.app.slidead.helpers.ImageDownloader;
 import com.slidead.app.slidead.helpers.LocationHelper;
 import com.slidead.app.slidead.helpers.PlaylistDownloader;
-
-import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +39,8 @@ public class LoginActivity extends Activity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
+        DownloadHelper.cleanDuplicateImage();
+
 //        File dir = new File(Environment.getExternalStorageDirectory().toString()+"/loocads");
 //        if (dir.exists()) {
 //            try {
@@ -47,29 +49,27 @@ public class LoginActivity extends Activity {
 //                e.printStackTrace();
 //            }
 //        }
+//
+//        LocationHelper loc = new LocationHelper();
+//        HashMap<String,String> alt = loc.getLocation(getApplicationContext());
+//        String latitu = "";
+//        String longitu = "";
+//
+//        for (Map.Entry<String, String> entrySet : alt.entrySet()) {
+//            String key = entrySet.getKey();
+//            String value = entrySet.getValue();
+//            if(key == "latitude") {
+//                latitu = value;
+//            }
+//            if(key == "longitude") {
+//                longitu = value;
+//            }
+//        }
 
-        LocationHelper loc = new LocationHelper();
-        HashMap<String,String> alt = loc.getLocation(getApplicationContext());
-        String latitu = "";
-        String longitu = "";
-
-        for (Map.Entry<String, String> entrySet : alt.entrySet()) {
-            String key = entrySet.getKey();
-            String value = entrySet.getValue();
-            if(key == "latitude") {
-                latitu = value;
-            }
-            if(key == "longitude") {
-                longitu = value;
-            }
-        }
-
-        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
 
 
-        editor.putString("latitude", latitu);
-        editor.putString("longitude", longitu);
-        editor.commit();
+
 
         String latitude=pref.getString("latitude", null);
         String longitude=pref.getString("longitude", null);
@@ -81,6 +81,17 @@ public class LoginActivity extends Activity {
 //        editor.remove("longitude"); // will delete key key_name4
 //        editor.commit();
 //        Toast.makeText(this,"Shared preference deleted", Toast.LENGTH_SHORT).show();
+
+
+        GPSTracker gps = new GPSTracker(this);
+        String latitu = String.valueOf(gps.getLatitude());
+        String longitu = String.valueOf(gps.getLongitude());
+
+        Toast.makeText(this,"Send current position latitude:" + latitu + " longitude: "+ longitu, Toast.LENGTH_SHORT).show();
+
+        editor.putString("latitude", latitu);
+        editor.putString("longitude", longitu);
+        editor.commit();
 
         AsyncTask<String,Void, Void> playlistTask =new PlaylistDownloader(LoginActivity.this);
 
@@ -94,6 +105,7 @@ public class LoginActivity extends Activity {
 
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
+
 
 
         addListenerOnButton();
