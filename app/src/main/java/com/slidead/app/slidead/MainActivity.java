@@ -98,6 +98,9 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
     ArrayList<String> linkList;
     int mProgress = 0;
     AlarmReceiver alarmReceiver= new AlarmReceiver();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,7 +142,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         cleanDuplicateImage();
 
 //        new PlaylistDownloader(this).execute(latitu,longitu);
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         String latitude=pref.getString("latitude", null);
         String longitude=pref.getString("longitude", null);
         Toast.makeText(this,"Shared preference key1:" + latitude + " key2: "+ longitude, Toast.LENGTH_SHORT).show();
@@ -166,10 +169,9 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
             public void run() {
                 // Do something here on the main thread
                 Log.d("Handlers", "Called on main thread");
-                // Repeat this the same runnable code block again another 2 seconds
-                // 'this' is referencing the Runnable object
                 SharedPreferences pref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
+
 
                 String status=pref.getString("status", null);
 
@@ -393,17 +395,17 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageScrollStateChanged(int state) {
+
+        if (state == 0 ) {
 //
-//        if (state == 0 ) {
-////
-//                String desc =mDemoSlider.getCurrentSlider().getDescription();
-//                Log.d("Slider Demo", "File Name: " + desc);
-//                Log.d("Slider Demo", "State: " + state);
+                String desc =mDemoSlider.getCurrentSlider().getDescription();
+                Log.d("Slider Demo", "File Name: " + desc);
+                Log.d("Slider Demo", "State: " + state);
+
+                String played = JsonHelper.saveImagePlayed(MainActivity.this,desc);
+//              Log.d("Slider Demo", mDemoSlider.getCurrentSlider().toString());
 //
-//                String played = JsonHelper.saveImagePlayed(MainActivity.this,desc);
-////                Log.d("Slider Demo", mDemoSlider.getCurrentSlider().toString());
-////
-//        }
+        }
 
     }
 
