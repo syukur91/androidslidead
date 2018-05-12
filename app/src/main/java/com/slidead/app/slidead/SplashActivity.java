@@ -12,6 +12,7 @@ import android.os.Bundle;
 import com.slidead.app.slidead.helpers.DownloadHelper;
 import com.slidead.app.slidead.helpers.ImageDownloader;
 import com.slidead.app.slidead.helpers.ImageListDownloader;
+import com.slidead.app.slidead.helpers.JsonHelper;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -49,6 +50,8 @@ public class SplashActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.CAMERA}, 1);
         }
 
+        String status = JsonHelper.setTripStatus(this);
+
 //        boolean isLatest = DownloadHelper.verifyLatestDownload(this);
 //
 //        if(!isLatest){
@@ -59,9 +62,9 @@ public class SplashActivity extends AppCompatActivity {
 
 
 
-//
-//        AsyncTask<String,Void, Void> imageTask = new ImageListDownloader(SplashActivity.this);
-//        imageTask.execute();
+
+        AsyncTask<String,Void, Void> imageTask = new ImageListDownloader(SplashActivity.this);
+        imageTask.execute();
 
 
 

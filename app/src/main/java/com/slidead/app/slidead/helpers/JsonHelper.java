@@ -323,5 +323,66 @@ public class JsonHelper {
     }
 
 
+    public static String setTripStatus(Context ctx){
+
+        try {
+
+
+            File testFile = new File(Environment.getExternalStorageDirectory() , "/loocads/tripstatus.txt");
+
+//            if(testFile.exists())
+//                testFile.delete();
+
+            String status = "start";
+
+            if (!testFile.exists()){
+
+                testFile.createNewFile();
+                BufferedWriter writer = new BufferedWriter(new FileWriter(testFile, true /*append*/));
+                writer.write(status);
+                writer.close();
+                MediaScannerConnection.scanFile(ctx, new String[]{testFile.toString()}, null, null);
+
+            }
+
+
+            return  status;
+
+        } catch (IOException e) {
+            Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
+            return null;
+        }
+
+    }
+
+    public static String getTripStatus(Context ctx){
+
+        try {
+
+
+            File file = new File(Environment.getExternalStorageDirectory() , "/loocads/tripstatus.txt");
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            //Read text from file
+            StringBuilder text = new StringBuilder();
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+            }
+            br.close();
+
+
+            return  text.toString();
+
+        } catch (IOException e) {
+            Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
+            return null;
+        }
+
+    }
+
+
 
 }

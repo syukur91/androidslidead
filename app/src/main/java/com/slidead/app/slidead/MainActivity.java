@@ -124,8 +124,8 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY,16);
-        calendar.set(Calendar.MINUTE, 25);
+        calendar.set(Calendar.HOUR_OF_DAY,03);
+        calendar.set(Calendar.MINUTE, 00);
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
 
 
@@ -161,52 +161,57 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         LocationHelper loc = new LocationHelper();
         HashMap<String,String> alt = loc.getLocation(this);
 
+        SharedPreferences statusPref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
+        String status=statusPref.getString("status", null);
+
+        Toast.makeText(this,"Trip: "+status, Toast.LENGTH_SHORT).show();
 
 
-// Define the code block to be executed
-         Runnable runnableCode = new Runnable() {
-            @Override
-            public void run() {
-                // Do something here on the main thread
-                Log.d("Handlers", "Called on main thread");
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
-                SharedPreferences.Editor editor = pref.edit();
 
-
-                String status=pref.getString("status", null);
-
-                if(status == null){
-                    editor.putString("status", "stop");
-                    editor.commit();
-                }
-
-                Log.d("Status:", status);
-
-                if (status.equals("start")){
-
-                    editor.putString("status", "stop");
-                    editor.apply();
-
-                    Toast.makeText(MainActivity.this,"Trip stopped", Toast.LENGTH_SHORT).show();
-
-//                    Log.d("Status:", status);
-
-                }else{
-
-                    editor.putString("status", "start");
-                    editor.apply();
-//                    Log.d("Status:", status);
-                    Toast.makeText(MainActivity.this,"Trip started", Toast.LENGTH_SHORT).show();
-
-
-                }
-
-
-                handler.postDelayed(this, 5000);
-            }
-        };
-// Start the initial runnable task by posting through the handler
-        handler.post(runnableCode);
+//// Define the code block to be executed
+//         Runnable runnableCode = new Runnable() {
+//            @Override
+//            public void run() {
+//                // Do something here on the main thread
+//                Log.d("Handlers", "Called on main thread");
+//                SharedPreferences pref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
+//                SharedPreferences.Editor editor = pref.edit();
+//
+//
+//                String status=pref.getString("status", null);
+//
+//                if(status == null){
+//                    editor.putString("status", "stop");
+//                    editor.commit();
+//                }
+//
+//                Log.d("Status:", status);
+//
+//                if (status.equals("start")){
+//
+//                    editor.putString("status", "stop");
+//                    editor.apply();
+//
+//                    Toast.makeText(MainActivity.this,"Trip stopped", Toast.LENGTH_SHORT).show();
+//
+////                    Log.d("Status:", status);
+//
+//                }else{
+//
+//                    editor.putString("status", "start");
+//                    editor.apply();
+////                    Log.d("Status:", status);
+//                    Toast.makeText(MainActivity.this,"Trip started", Toast.LENGTH_SHORT).show();
+//
+//
+//                }
+//
+//
+//                handler.postDelayed(this, 5000);
+//            }
+//        };
+//// Start the initial runnable task by posting through the handler
+//        handler.post(runnableCode);
     }
 
     private Runnable updateTimerThread = new Runnable()
@@ -239,63 +244,73 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
             File testFile = new File(context.getExternalFilesDir(null), "TestFile.txt");
 
-            if(testFile.exists()){
+            SharedPreferences statusPref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
+            String status=statusPref.getString("status", null);
 
-                String content = JsonHelper.readJson(context);
-                mDemoSlider = (SliderLayout)findViewById(slider);
-                HashMap<String,String> url_maps = new HashMap<String, String>();
-                linkList = new ArrayList<String>();
-                urlList =  JsonHelper.parseJson(context, content);
+            if(status.equals("start")){
 
-                for (HashMap<String, String> object: urlList) {
-                    String title = "";
-                    String name = "";
-                    for (Map.Entry<String, String> entrySet : object.entrySet()) {
-                        String key = entrySet.getKey();
-                        String value = entrySet.getValue();
-                        if(key == "id") {
-                            name = value;
+                if(testFile.exists()){
+
+                    String content = JsonHelper.readJson(context);
+                    mDemoSlider = (SliderLayout)findViewById(slider);
+                    HashMap<String,String> url_maps = new HashMap<String, String>();
+                    linkList = new ArrayList<String>();
+                    urlList =  JsonHelper.parseJson(context, content);
+
+                    for (HashMap<String, String> object: urlList) {
+                        String title = "";
+                        String name = "";
+                        for (Map.Entry<String, String> entrySet : object.entrySet()) {
+                            String key = entrySet.getKey();
+                            String value = entrySet.getValue();
+                            if(key == "id") {
+                                name = value;
+                            }
+                            if(key == "title") {
+                                title = value;
+                            }
                         }
-                        if(key == "title") {
-                            title = value;
+                        url_maps.put(title, name);
+                    }
+
+
+
+                    for (File item : files){
+                        if(item.getName().contains("-1.jpg")){
+                            item.delete();
+                        }else{
+                            file_maps.put(item.getName(),item);
                         }
                     }
-                    url_maps.put(title, name);
-                }
 
+                    // when we show slider, we must create for or while, you can add it
+                    for(String name : url_maps.keySet()){
+                        DefaultSliderView textSliderView = new DefaultSliderView(MainActivity.this);
+                        File file = new File(Environment.getExternalStorageDirectory() +"/loocads", url_maps.get(name)+".jpg");
+                        // initialize a SliderLayout
+                        textSliderView.image(file).setScaleType(BaseSliderView.ScaleType.Fit);
+                        textSliderView.description(file.getName());
+                        result += url_maps.get(name)+",";
+                        mDemoSlider.addSlider(textSliderView);
 
-
-                for (File item : files){
-                    if(item.getName().contains("-1.jpg")){
-                        item.delete();
-                    }else{
-                        file_maps.put(item.getName(),item);
                     }
+
+
+
+                    // you can change the animation, time page and anything.. read more on github
+                    mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
+                    mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+                    mDemoSlider.setDuration(4000);
+                    mDemoSlider.startAutoCycle();
+                    mDemoSlider.setEnabled(false);
+                    mDemoSlider.setClickable(false);
+                    mDemoSlider.addOnPageChangeListener(MainActivity.this);
                 }
 
-                // when we show slider, we must create for or while, you can add it
-                for(String name : url_maps.keySet()){
-                    DefaultSliderView textSliderView = new DefaultSliderView(MainActivity.this);
-                    File file = new File(Environment.getExternalStorageDirectory() +"/loocads", url_maps.get(name)+".jpg");
-                    // initialize a SliderLayout
-                    textSliderView.image(file).setScaleType(BaseSliderView.ScaleType.Fit);
-                    textSliderView.description(file.getName());
-                    result += url_maps.get(name)+",";
-                    mDemoSlider.addSlider(textSliderView);
 
-                }
-
-
-
-                // you can change the animation, time page and anything.. read more on github
-                mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
-                mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
-                mDemoSlider.setDuration(4000);
-                mDemoSlider.startAutoCycle();
-                mDemoSlider.setEnabled(false);
-                mDemoSlider.setClickable(false);
-                mDemoSlider.addOnPageChangeListener(MainActivity.this);
             }
+
+
 
         }
     };

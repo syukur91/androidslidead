@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.slidead.app.slidead.helpers.DownloadHelper;
 import com.slidead.app.slidead.helpers.GPSTracker;
 import com.slidead.app.slidead.helpers.ImageDownloader;
+import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
 import com.slidead.app.slidead.helpers.PlaylistDownloader;
 
@@ -106,6 +107,15 @@ public class LoginActivity extends Activity {
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
 
+
+        String status =JsonHelper.getTripStatus(this);
+
+        Toast.makeText(this,"Trip:"+status, Toast.LENGTH_SHORT).show();
+
+        SharedPreferences statusPref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
+        SharedPreferences.Editor statusEditor = statusPref.edit();
+        statusEditor.putString("status", status);
+        statusEditor.commit();
 
 
         addListenerOnButton();
