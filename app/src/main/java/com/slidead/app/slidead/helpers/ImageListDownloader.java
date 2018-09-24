@@ -66,7 +66,6 @@ public class ImageListDownloader  extends AsyncTask<String, Void, Void> {
             httpURLConnection.setRequestProperty("Content-Type", "application/json"); // here you are setting the `Content-Type` for the data you are sending which is `application/json`
             httpURLConnection.connect();
 
-
             JSONObject obj = new JSONObject();
             JSONArray array = new JSONArray();
             String deviceId = android.provider.Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -106,8 +105,8 @@ public class ImageListDownloader  extends AsyncTask<String, Void, Void> {
             urlList = null;
             while((line = br.readLine()) != null ) {
                 responseOutput.append(line);
-
             }
+
             br.close();
 
             output.append(System.getProperty("line.separator") + "Response " + System.getProperty("line.separator") + System.getProperty("line.separator") + responseOutput.toString());

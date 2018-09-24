@@ -296,7 +296,6 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                     }
 
 
-
                     // you can change the animation, time page and anything.. read more on github
                     mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Default);
                     mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);

@@ -6,8 +6,11 @@ package com.slidead.app.slidead.helpers;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+
+import com.slidead.app.slidead.SplashActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -302,23 +305,23 @@ public class JsonHelper {
 
             File testFile = new File(ctx.getExternalFilesDir(null), "ImagePlayed.txt");
 
-//            if(testFile.exists())
-//                testFile.delete();
 
             if (!testFile.exists())
                 testFile.createNewFile();
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(testFile, true /*append*/));
-            writer.write(str+",");
-            writer.close();
-            MediaScannerConnection.scanFile(ctx, new String[]{testFile.toString()}, null, null);
+            AsyncTask<String,Void, Void> balanceUpdaterTask = new BalanceUpdater(ctx);
+            String[] id = str.split("\\.");
+            Log.e("FileName:", id[0]);
+            balanceUpdaterTask.execute(id[0]);
+
 
             return  str;
 
         } catch (IOException e) {
             Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
-            return null;
         }
+
+        return null;
 
     }
 
