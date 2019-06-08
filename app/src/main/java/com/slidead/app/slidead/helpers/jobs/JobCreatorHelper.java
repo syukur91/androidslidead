@@ -1,4 +1,4 @@
-package com.slidead.app.slidead.helpers;
+package com.slidead.app.slidead.helpers.jobs;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;

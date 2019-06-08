@@ -70,7 +70,7 @@
         <receiver android:name=".helpers.AlarmReceiver" />
 
         <receiver
-            android:name=".helpers.JobReceiver"
+            android:name=".helpers.jobs.JobReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.evernote.android.job.ADD_JOB_CREATOR"/>

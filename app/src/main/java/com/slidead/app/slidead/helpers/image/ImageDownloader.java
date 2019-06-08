@@ -1,4 +1,4 @@
-package com.slidead.app.slidead.helpers;
+package com.slidead.app.slidead.helpers.image;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,6 +6,8 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.slidead.app.slidead.R;
+import com.slidead.app.slidead.helpers.DownloadHelper;
+import com.slidead.app.slidead.helpers.JsonHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,19 +54,11 @@ public class ImageDownloader extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         try {
 
-
             URL url = new URL("http://45.76.178.16:4443/images");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
             connection.connect();
-
-//            InputStream inputStream;
-//            int status = connection.getResponseCode();
-//            if (status != HttpURLConnection.HTTP_OK)
-//                inputStream = connection.getErrorStream();
-//            else
-//                inputStream = connection.getInputStream();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = "";
@@ -117,7 +111,6 @@ public class ImageDownloader extends AsyncTask<String, Void, Void> {
 
 
             }
-
 
         } catch (MalformedURLException e) {
             e.printStackTrace();

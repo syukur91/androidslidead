@@ -4,37 +4,33 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.slidead.app.slidead.helpers.DownloadHelper;
-import com.slidead.app.slidead.helpers.ImageDownloader;
+import com.slidead.app.slidead.helpers.image.ImageDownloader;
+
 import com.slidead.app.slidead.helpers.ImageListDownloader;
 import com.slidead.app.slidead.helpers.JsonHelper;
 
+import java.io.File;
+
+import dmax.dialog.SpotsDialog;
+
 public class SplashActivity extends AppCompatActivity {
 
+
+    private SpotsDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
-
-
-// setRepeating() lets you specify a precise custom interval--in this case,
-// 1 day
-
-
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, }
-//                        ,10);
-//            }
-//        }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(SplashActivity.this,
@@ -50,23 +46,21 @@ public class SplashActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions( this, new String[]{Manifest.permission.CAMERA}, 1);
         }
 
-        String status = JsonHelper.setTripStatus(this);
-
-//        boolean isLatest = DownloadHelper.verifyLatestDownload(this);
-//
-//        if(!isLatest){
-//            AsyncTask<String,Void, Void> imageTask = new ImageDownloader(SplashActivity.this);
-//            imageTask.execute();
-//        }
-//
 
 
+//        String status = JsonHelper.setTripStatus(this);
 
+        boolean isLatest = DownloadHelper.verifyLatestDownload(this);
 
-        AsyncTask<String,Void, Void> imageTask = new ImageListDownloader(SplashActivity.this);
-        imageTask.execute();
+        dialog = new SpotsDialog(this, R.style.Custom);
 
+        if(!isLatest){
+            AsyncTask<String,Void, Void> imageTask = new ImageDownloader(SplashActivity.this, dialog);
+            imageTask.execute();
+        }
 
+//        AsyncTask<String,Void, Void> imageTask = new ImageListDownloader(SplashActivity.this);
+//        imageTask.execute();
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -76,5 +70,14 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         }, 8000L); //3000 L = 3 detik
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if (dialog!=null && dialog.isShowing()){
+            dialog.dismiss();
+        }
     }
 }

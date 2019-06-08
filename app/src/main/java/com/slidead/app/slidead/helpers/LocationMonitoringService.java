@@ -30,6 +30,7 @@ import com.slidead.app.slidead.LoginActivity;
 import com.slidead.app.slidead.MainActivity;
 import com.slidead.app.slidead.TransitionActivity;
 import com.slidead.app.slidead.helpers.Constans;
+import com.slidead.app.slidead.helpers.playlist.PlaylistDownloader;
 
 
 /**

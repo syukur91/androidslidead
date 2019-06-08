@@ -352,7 +352,7 @@ public class JsonHelper {
             return  status;
 
         } catch (IOException e) {
-            Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
+            Log.e("ReadWriteFile", "Unable to write to the tripstatus.txt file.");
             return null;
         }
 
@@ -364,6 +364,10 @@ public class JsonHelper {
 
 
             File file = new File(Environment.getExternalStorageDirectory() , "/loocads/tripstatus.txt");
+
+            if (!file.exists()){
+                file.createNewFile();
+            }
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
@@ -380,7 +384,7 @@ public class JsonHelper {
             return  text.toString();
 
         } catch (IOException e) {
-            Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
+            Log.e("ReadWriteFile", "Unable to write to the tripstatus.txt file.");
             return null;
         }
 

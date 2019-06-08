@@ -1,31 +1,17 @@
 package com.slidead.app.slidead;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.os.ResultReceiver;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +20,6 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.DefaultSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
-import com.evernote.android.job.JobManager;
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -42,27 +27,19 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.RetryStrategy;
 import com.firebase.jobdispatcher.Trigger;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.slidead.app.slidead.helpers.AlarmReceiver;
-import com.slidead.app.slidead.helpers.CaptureService;
 import com.slidead.app.slidead.helpers.GPSTracker;
-import com.slidead.app.slidead.helpers.ImageListDownloader;
-import com.slidead.app.slidead.helpers.JobSchedulerHelper;
 import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
 import com.slidead.app.slidead.helpers.LocationMonitoringService;
-import com.slidead.app.slidead.helpers.ImageListDownloaderService;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
-import com.slidead.app.slidead.helpers.StartAlarmService;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -133,7 +110,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
 //        startService(new Intent(MainActivity.this, PlaylistDownloadService.class));
 
-        startService(new Intent(MainActivity.this, CaptureService.class));
+//        startService(new Intent(MainActivity.this, CaptureService.class));
         startService(new Intent(MainActivity.this, LocationMonitoringService.class));
         registerReceiver(broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
 //        registerReceiver(alarmReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
@@ -168,50 +145,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
 
 
-//// Define the code block to be executed
-//         Runnable runnableCode = new Runnable() {
-//            @Override
-//            public void run() {
-//                // Do something here on the main thread
-//                Log.d("Handlers", "Called on main thread");
-//                SharedPreferences pref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
-//                SharedPreferences.Editor editor = pref.edit();
-//
-//
-//                String status=pref.getString("status", null);
-//
-//                if(status == null){
-//                    editor.putString("status", "stop");
-//                    editor.commit();
-//                }
-//
-//                Log.d("Status:", status);
-//
-//                if (status.equals("start")){
-//
-//                    editor.putString("status", "stop");
-//                    editor.apply();
-//
-//                    Toast.makeText(MainActivity.this,"Trip stopped", Toast.LENGTH_SHORT).show();
-//
-////                    Log.d("Status:", status);
-//
-//                }else{
-//
-//                    editor.putString("status", "start");
-//                    editor.apply();
-////                    Log.d("Status:", status);
-//                    Toast.makeText(MainActivity.this,"Trip started", Toast.LENGTH_SHORT).show();
-//
-//
-//                }
-//
-//
-//                handler.postDelayed(this, 5000);
-//            }
-//        };
-//// Start the initial runnable task by posting through the handler
-//        handler.post(runnableCode);
+
     }
 
     private Runnable updateTimerThread = new Runnable()
@@ -229,6 +163,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         @Override
         public void onReceive(Context context, Intent intent) {
 
+            try {
 
             String result = "";
 
@@ -237,17 +172,20 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
             file_maps.clear();
             mDemoSlider.removeAllSliders();
 
-            String path = Environment.getExternalStorageDirectory().toString()+"/loocads";
+            String path = Environment.getExternalStorageDirectory().toString()+"/data/loocads";
 
-            File f = new File(path);
+            File f = new File(context.getExternalFilesDir(null), "/data/loocads");
             File files[] = f.listFiles();
 
             File testFile = new File(context.getExternalFilesDir(null), "TestFile.txt");
 
+            if (!testFile.exists())
+                testFile.createNewFile();
+
             SharedPreferences statusPref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
             String status=statusPref.getString("status", null);
 
-            if(status.equals("start")){
+//            if(status.equals("start")){
 
                 if(testFile.exists()){
 
@@ -286,7 +224,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                     // when we show slider, we must create for or while, you can add it
                     for(String name : url_maps.keySet()){
                         DefaultSliderView textSliderView = new DefaultSliderView(MainActivity.this);
-                        File file = new File(Environment.getExternalStorageDirectory() +"/loocads", url_maps.get(name)+".jpg");
+                        File file = new File(context.getExternalFilesDir(null), "/data/loocads/" + url_maps.get(name)+".jpg");
                         // initialize a SliderLayout
                         textSliderView.image(file).setScaleType(BaseSliderView.ScaleType.Fit);
                         textSliderView.description(file.getName());
@@ -307,9 +245,12 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
                 }
 
 
+//            }
+
+            } catch (IOException e) {
+                Log.e("ReadWriteFile", "Unable to write to the TestFile.txt file.");
+
             }
-
-
 
         }
     };
@@ -348,12 +289,12 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     private void cleanDuplicateImage(){
 
-        String path = Environment.getExternalStorageDirectory().toString()+"/loocads";
-        File f = new File(path);
+//        String path = Environment.getExternalStorageDirectory().toString()+"/loocads";
+        File f = new File(this.getApplicationContext().getExternalFilesDir(null), "/data/loocads");
         File files[] = f.listFiles();
 
         for (File item : files){
-            if(item.getName().contains("-1.jpg")){
+            if(item.getName().toString().contains("-1.jpg")){
                 item.delete();
             }
         }

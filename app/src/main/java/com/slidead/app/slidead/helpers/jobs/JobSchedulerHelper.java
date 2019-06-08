@@ -1,26 +1,15 @@
-package com.slidead.app.slidead.helpers;
+package com.slidead.app.slidead.helpers.jobs;
 
 /**
  * Created by syukur on 25/02/18.
  */
 
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobRequest;
-import com.slidead.app.slidead.MainActivity;
-import com.slidead.app.slidead.R;
 
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**

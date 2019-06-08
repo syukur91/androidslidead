@@ -73,16 +73,19 @@ public class ImageListDownloader  extends AsyncTask<String, Void, Void> {
             ArrayList<String> imageList = new ArrayList<String>();
 
             File directory = new File(Environment.getExternalStorageDirectory() + "/loocads");
-            File[] files = directory.listFiles();
-            for (File file : files) {
-                String fileName = file.getName();
-                fileName = fileName.substring(0, fileName.lastIndexOf("."));
-                array.put(fileName);
-//                imageList.add(fileName);
-            }
 
             if (!directory.exists()) {
-                throw new IOException("Folder not found");
+                directory.mkdirs();
+            }else{
+
+                File[] files = directory.listFiles();
+                for (File file : files) {
+                    String fileName = file.getName();
+                    fileName = fileName.substring(0, fileName.lastIndexOf("."));
+                    array.put(fileName);
+//                imageList.add(fileName);
+                }
+
             }
 
             obj.put("deviceId", "MHZ87999");
@@ -112,42 +115,42 @@ public class ImageListDownloader  extends AsyncTask<String, Void, Void> {
             output.append(System.getProperty("line.separator") + "Response " + System.getProperty("line.separator") + System.getProperty("line.separator") + responseOutput.toString());
             urlList =  JsonHelper.parseImageListResponse(responseOutput.toString());
             String outputResult = JsonHelper.parseImageListArray(mContext,responseOutput.toString());
-            if(urlList.size() != 0){
-
-                for (HashMap<String, String> object: urlList) {
-                    String title = "";
-                    String imageUrl = "";
-                    String id = "";
-
-
-                    for (Map.Entry<String, String> entrySet : object.entrySet()) {
-                        String key = entrySet.getKey();
-                        String value = entrySet.getValue();
-                        if(key == "url") {
-                            imageUrl = value;
-                        }
-                        if(key == "title") {
-                            title = value;
-                        }
-                        if(key == "id") {
-                            id = value;
-                        }
-
-                        if(imageUrl != ""){
-                            DownloadHelper.downloadImage(imageUrl,id,mContext);
-
-                        }
-
-                    }
-
-                    Log.e(TAG, "Json parsing completed: " + title);
-                    ;
-
-                    Log.e(TAG, "Updated get image list" );
-
-                }
-
-            }
+//            if(urlList.size() != 0){
+//
+//                for (HashMap<String, String> object: urlList) {
+//                    String title = "";
+//                    String imageUrl = "";
+//                    String id = "";
+//
+//
+//                    for (Map.Entry<String, String> entrySet : object.entrySet()) {
+//                        String key = entrySet.getKey();
+//                        String value = entrySet.getValue();
+//                        if(key == "url") {
+//                            imageUrl = value;
+//                        }
+//                        if(key == "title") {
+//                            title = value;
+//                        }
+//                        if(key == "id") {
+//                            id = value;
+//                        }
+//
+//                        if(imageUrl != ""){
+//                            DownloadHelper.downloadImage(imageUrl,id,mContext);
+//
+//                        }
+//
+//                    }
+//
+//                    Log.e(TAG, "Json parsing completed: " + title);
+//                    ;
+//
+//                    Log.e(TAG, "Updated get image list" );
+//
+//                }
+//
+//            }
 
             Log.e(TAG, "Json parsing completed: " + responseOutput);
 

@@ -1,11 +1,11 @@
-package com.slidead.app.slidead.helpers;
+package com.slidead.app.slidead.helpers.jobs;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 
 import com.evernote.android.job.JobCreator;
 import com.evernote.android.job.JobManager;
+import com.slidead.app.slidead.helpers.jobs.JobCreatorHelper;
 
 /**
  * Created by syukur on 25/02/18.

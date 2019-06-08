@@ -41,7 +41,8 @@ public class DownloadHelper extends Activity {
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
                 request.setVisibleInDownloadsUi(false);
                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
-                request.setDestinationInExternalPublicDir("/loocads", id+".jpg");
+                request.setDestinationInExternalFilesDir(c,Environment.getDataDirectory() +"/loocads", id+".jpg");
+
                 if(file.exists() == false) {
                     final DownloadManager dm = (DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE);
                     dm.enqueue(request);

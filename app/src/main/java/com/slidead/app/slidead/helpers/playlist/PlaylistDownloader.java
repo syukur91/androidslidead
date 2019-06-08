@@ -1,16 +1,12 @@
-package com.slidead.app.slidead.helpers;
+package com.slidead.app.slidead.helpers.playlist;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
 
-
-import com.slidead.app.slidead.MainActivity;
 import com.slidead.app.slidead.R;
+import com.slidead.app.slidead.helpers.JsonHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,25 +20,19 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
 
-import static android.R.attr.progress;
 import static android.content.ContentValues.TAG;
-
-/**
- * Created by Syukur on 10/29/2017.
- */
 
 public class PlaylistDownloader extends AsyncTask<String, Void, Void> {
 
     private Context mContext;
-    private  SpotsDialog dialog;
+    private SpotsDialog dialog;
 
     public PlaylistDownloader(Context context){
         mContext = context;
-        dialog = new SpotsDialog(mContext,R.style.API);
+        dialog = new SpotsDialog(mContext, R.style.API);
     }
 
     protected void onPreExecute() {
@@ -78,8 +68,8 @@ public class PlaylistDownloader extends AsyncTask<String, Void, Void> {
             JSONObject jsonObject = new JSONObject();
             String deviceId = android.provider.Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-            jsonObject.put("latitude",Double.parseDouble(latitude));
-            jsonObject.put("longitude",Double.parseDouble(longitude));
+            jsonObject.put("latitude",Double.parseDouble("-6.87634032307858"));
+            jsonObject.put("longitude",Double.parseDouble("107.60182648419288"));
             jsonObject.put("deviceId",deviceId);
 
 

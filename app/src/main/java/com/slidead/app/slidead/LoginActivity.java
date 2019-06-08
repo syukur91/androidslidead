@@ -6,6 +6,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.app.Activity;
@@ -17,7 +18,7 @@ import com.slidead.app.slidead.helpers.GPSTracker;
 import com.slidead.app.slidead.helpers.ImageDownloader;
 import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
-import com.slidead.app.slidead.helpers.PlaylistDownloader;
+import com.slidead.app.slidead.helpers.playlist.PlaylistDownloader;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class LoginActivity extends Activity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
 
-        DownloadHelper.cleanDuplicateImage();
+//        DownloadHelper.cleanDuplicateImage();
 
 //        File dir = new File(Environment.getExternalStorageDirectory().toString()+"/loocads");
 //        if (dir.exists()) {
@@ -74,6 +75,7 @@ public class LoginActivity extends Activity {
 
         String latitude=pref.getString("latitude", null);
         String longitude=pref.getString("longitude", null);
+
 //        Toast.makeText(this,"Shared preference saved", Toast.LENGTH_SHORT).show();
 //        Toast.makeText(this,"Shared preference key1:" + latitude + " key2: "+ longitude, Toast.LENGTH_SHORT).show();
 
@@ -119,6 +121,13 @@ public class LoginActivity extends Activity {
 
 
         addListenerOnButton();
+
+        File loocadsFolder = new File(Environment.getExternalStorageDirectory() + "/data/loocads");
+        if (!loocadsFolder.exists()){
+
+            Log.d("App", "data/loocads is exists");
+
+        }
 
     }
 
