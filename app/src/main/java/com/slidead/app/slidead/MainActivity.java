@@ -86,26 +86,17 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
 
 
-//        scheduleJob();
-
-
-//        JobSchedulerHelper.schedulePeriodic();
-
-        // Set the alarm to start at 21:32 PM
-
-
-
-        alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY,03);
-        calendar.set(Calendar.MINUTE, 00);
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
-
+//        alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+//        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+//        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+//
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(System.currentTimeMillis());
+//        calendar.set(Calendar.HOUR_OF_DAY,03);
+//        calendar.set(Calendar.MINUTE, 00);
+//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
+//
 
         Log.d(TAG, "running a scheduler");
 
@@ -146,7 +137,7 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         SharedPreferences statusPref = getApplicationContext().getSharedPreferences("statusPref", MODE_PRIVATE);
         String status=statusPref.getString("status", null);
 
-        Toast.makeText(this,"Trip: "+status, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,"Trip: "+status, Toast.LENGTH_SHORT).show();
 
 
 //        handler.postDelayed(runnable, 5000);
