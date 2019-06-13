@@ -87,11 +87,9 @@ public class ImageListDownloaderService extends Service {
     }
 
     public void readWebPage(){
-        HttpClient client = new DefaultHttpClient();
-        HttpPost request = new HttpPost("http://45.76.178.16:4443/playlist");
 
         try {
-            URL url = new URL("http://45.76.178.16:4443/playlists");
+            URL url = new URL(Constans.ENDPOINT_ADDR+"/playlists");
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.

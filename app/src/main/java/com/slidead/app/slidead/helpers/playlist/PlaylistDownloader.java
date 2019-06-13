@@ -6,6 +6,7 @@ import android.provider.Settings;
 import android.util.Log;
 
 import com.slidead.app.slidead.R;
+import com.slidead.app.slidead.helpers.Constans;
 import com.slidead.app.slidead.helpers.JsonHelper;
 
 import org.json.JSONException;
@@ -57,7 +58,7 @@ public class PlaylistDownloader extends AsyncTask<String, Void, Void> {
             String latitude = params[0];
             String longitude = params[1];
 
-            URL url = new URL("http://45.76.178.16:4443/playlist"); //Enter URL here
+            URL url = new URL(Constans.ENDPOINT_ADDR+"/playlist"); //Enter URL here
             HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.

@@ -47,7 +47,7 @@ public class BalanceUpdater extends AsyncTask<String, Void, Void> {
 
         String id = strings[0];
 
-        URL url = new URL("http://45.76.178.16:4443/deduction");
+        URL url = new URL(Constans.ENDPOINT_ADDR+"/deduction");
         HttpURLConnection httpURLConnection = (HttpURLConnection)url.openConnection();
         httpURLConnection.setDoOutput(true);
         httpURLConnection.setRequestMethod("POST"); // here you are telling that it is a POST request, which can be changed into "PUT", "GET", "DELETE" etc.

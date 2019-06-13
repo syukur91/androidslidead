@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.slidead.app.slidead.R;
+import com.slidead.app.slidead.helpers.Constans;
 import com.slidead.app.slidead.helpers.DownloadHelper;
 import com.slidead.app.slidead.helpers.JsonHelper;
 
@@ -54,7 +55,7 @@ public class ImageDownloader extends AsyncTask<String, Void, Void> {
     protected Void doInBackground(String... params) {
         try {
 
-            URL url = new URL("http://45.76.178.16:4443/images");
+            URL url = new URL(Constans.ENDPOINT_ADDR+"/images");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);

@@ -53,7 +53,7 @@ public class ImageDownloader extends AsyncTask<String, Void, Void> {
         try {
 
 
-            URL url = new URL("http://45.76.178.16:4443/images");
+            URL url = new URL(Constans.ENDPOINT_ADDR+"/images");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
