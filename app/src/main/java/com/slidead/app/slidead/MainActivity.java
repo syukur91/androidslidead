@@ -33,6 +33,7 @@ import com.slidead.app.slidead.helpers.JsonHelper;
 import com.slidead.app.slidead.helpers.LocationHelper;
 import com.slidead.app.slidead.helpers.LocationMonitoringService;
 import com.slidead.app.slidead.helpers.SchedulerHelper;
+import com.slidead.app.slidead.helpers.playlist.PlaylistDownloader;
 
 import java.io.File;
 import java.io.IOException;
@@ -118,7 +119,11 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
         cleanDuplicateImage();
 
-//        new PlaylistDownloader(this).execute(latitu,longitu);
+        GPSTracker gps = new GPSTracker(this);
+        String latitu = String.valueOf(gps.getLatitude());
+        String longitu = String.valueOf(gps.getLongitude());
+
+        new PlaylistDownloader(this).execute(latitu,longitu);
         final SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         String latitude=pref.getString("latitude", null);
         String longitude=pref.getString("longitude", null);
@@ -144,6 +149,9 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
         Toast.makeText(this,"Trip: "+status, Toast.LENGTH_SHORT).show();
 
 
+//        handler.postDelayed(runnable, 5000);
+
+
 
 
     }
@@ -158,6 +166,30 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
             timer.scheduleAtFixedRate(updateTimerThread, 5, 5, TimeUnit.SECONDS);
         }
     };
+
+//    private Runnable runnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            //Do your refreshing
+//            GPSTracker gps = new GPSTracker(MainActivity.this);
+//            String latitu = String.valueOf(gps.getLatitude());
+//            String longitu = String.valueOf(gps.getLongitude());
+//
+//            new PlaylistDownloader(MainActivity.this).execute(latitu,longitu);
+//            //This basically reruns this runnable in 5 seconds
+//            handler.postDelayed(this, 20000);
+//
+////            finish();
+////            overridePendingTransition(0, 0);
+////            startActivity(getIntent());
+////            overridePendingTransition(0, 0);
+//
+//
+//            Intent refresh = new Intent(MainActivity.this, MainActivity.class);
+//            startActivity(refresh);
+//            MainActivity.this.finish(); //
+//        }
+//    };
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -350,17 +382,17 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
-        if (state == 0 ) {
 //
-                String desc =mDemoSlider.getCurrentSlider().getDescription();
-                Log.d("Slider Demo", "File Name: " + desc);
-                Log.d("Slider Demo", "State: " + state);
-
-                String played = JsonHelper.saveImagePlayed(MainActivity.this,desc);
-//              Log.d("Slider Demo", mDemoSlider.getCurrentSlider().toString());
-//
-        }
+//        if (state == 0 ) {
+////
+////                String desc =mDemoSlider.getCurrentSlider().getDescription();
+////                Log.d("Slider Demo", "File Name: " + desc);
+////                Log.d("Slider Demo", "State: " + state);
+////
+////                String played = JsonHelper.saveImagePlayed(MainActivity.this,desc);
+////              Log.d("Slider Demo", mDemoSlider.getCurrentSlider().toString());
+////
+//        }
 
     }
 

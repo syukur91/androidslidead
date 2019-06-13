@@ -6,7 +6,7 @@ package com.slidead.app.slidead.helpers;
 
 public class Constans {
 
-    public static final int LOCATION_INTERVAL = 80000;
+    public static final int LOCATION_INTERVAL = 8000;
     public static final int FASTEST_LOCATION_INTERVAL = 1000;
     public static final float SMALLEST_DISPLACEMENT = 1;
 

@@ -68,10 +68,13 @@ public class PlaylistDownloader extends AsyncTask<String, Void, Void> {
             JSONObject jsonObject = new JSONObject();
             String deviceId = android.provider.Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
 
-            jsonObject.put("latitude",Double.parseDouble("-6.87634032307858"));
-            jsonObject.put("longitude",Double.parseDouble("107.60182648419288"));
+            jsonObject.put("latitude",Double.parseDouble(latitude));
+            jsonObject.put("longitude",Double.parseDouble(longitude));
             jsonObject.put("deviceId",deviceId);
 
+
+            Log.i(TAG, "latitude: "+ latitude );
+            Log.i(TAG, "longitude: "+ longitude );
 
             DataOutputStream wr = new DataOutputStream(httpURLConnection.getOutputStream());
             wr.writeBytes(jsonObject.toString());
