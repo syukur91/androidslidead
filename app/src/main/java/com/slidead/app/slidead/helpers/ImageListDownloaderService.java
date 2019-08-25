@@ -171,16 +171,16 @@ public class ImageListDownloaderService extends Service {
 
                     }
 
-                    Log.e(TAG, "Json parsing completed: " + title);
+                    Log.i(TAG, "Json parsing completed: " + title);
                     ;
 
-                    Log.e(TAG, "Updated get image list" );
+                    Log.i(TAG, "Updated get image list" );
 
                 }
 
             }
 
-            Log.e(TAG, "Json parsing completed: " + responseOutput);
+            Log.i(TAG, "Json parsing completed: " + responseOutput);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -37,7 +37,7 @@ public class BalanceUpdater extends AsyncTask<String, Void, Void> {
 
     protected void onPreExecute() {
         super.onPreExecute();
-        Log.e(TAG, "Download begin " );
+        Log.i(TAG, "Download begin " );
     }
 
     @Override
@@ -76,7 +76,7 @@ public class BalanceUpdater extends AsyncTask<String, Void, Void> {
         br.close();
 
         output.append(System.getProperty("line.separator") + "Response " + System.getProperty("line.separator") + System.getProperty("line.separator") + responseOutput.toString());
-        Log.e(TAG, "Json parsing completed: " + responseOutput);
+        Log.i(TAG, "Json parsing completed: " + responseOutput);
 
 
         } catch (MalformedURLException e) {
@@ -92,6 +92,5 @@ public class BalanceUpdater extends AsyncTask<String, Void, Void> {
 
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
-        Log.e(TAG, "Json parsing completed: " );
     }
 }

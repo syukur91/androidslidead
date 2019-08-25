@@ -50,7 +50,7 @@ public class ImageListDownloader  extends AsyncTask<String, Void, Void> {
     protected void onPreExecute() {
 //        dialog.show();
         super.onPreExecute();
-        Log.e(TAG, "Download begin " );
+        Log.i(TAG, "Download begin " );
     }
 
 
@@ -152,7 +152,7 @@ public class ImageListDownloader  extends AsyncTask<String, Void, Void> {
 //
 //            }
 
-            Log.e(TAG, "Json parsing completed: " + responseOutput);
+
 
 
 
@@ -169,7 +169,6 @@ public class ImageListDownloader  extends AsyncTask<String, Void, Void> {
 
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
-        Log.e(TAG, "Json parsing completed: " );
 //        dialog.dismiss();
     }
 

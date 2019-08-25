@@ -39,7 +39,7 @@ public class PlaylistDownloader extends AsyncTask<String, Void, Void> {
     protected void onPreExecute() {
 //        dialog.show();
         super.onPreExecute();
-        Log.e(TAG, "Post begin " );
+        Log.i(TAG, "Requesting Playlist " );
     }
 
 //    private final Context context;
@@ -99,7 +99,7 @@ public class PlaylistDownloader extends AsyncTask<String, Void, Void> {
             output.append(System.getProperty("line.separator") + "Response " + System.getProperty("line.separator") + System.getProperty("line.separator") + responseOutput.toString());
             urlList =  JsonHelper.parseResponse(responseOutput.toString());
             JsonHelper.saveJson(mContext, responseOutput.toString());
-            Log.e(TAG, "Json parsing completed: " + responseOutput);
+            Log.i(TAG, "Json parsing completed: " + responseOutput);
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -114,7 +114,6 @@ public class PlaylistDownloader extends AsyncTask<String, Void, Void> {
 
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
-        Log.e(TAG, "Json parsing completed: " );
 //        dialog.dismiss();
     }
 

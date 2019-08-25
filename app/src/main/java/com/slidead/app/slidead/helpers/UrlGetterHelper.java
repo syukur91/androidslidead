@@ -65,7 +65,7 @@ public class UrlGetterHelper extends AsyncTask<Void, Void, Void>   {
     @Override
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
-        Log.e(TAG, "Json parsing completed: " + jsonStr);
+        Log.i(TAG, "Json parsing completed: " + jsonStr);
 
     }
 
