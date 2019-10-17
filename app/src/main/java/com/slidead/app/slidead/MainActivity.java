@@ -86,26 +86,12 @@ public class MainActivity extends Activity implements BaseSliderView.OnSliderCli
 
 
 
-//        alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-//        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
-//        alarmIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
-//
-//
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-//        calendar.set(Calendar.HOUR_OF_DAY,03);
-//        calendar.set(Calendar.MINUTE, 00);
-//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY, alarmIntent);
-//
-
         Log.d(TAG, "running a scheduler");
 
-//        startService(new Intent(MainActivity.this, PlaylistDownloadService.class));
 
-//        startService(new Intent(MainActivity.this, CaptureService.class));
         startService(new Intent(MainActivity.this, LocationMonitoringService.class));
+
         registerReceiver(broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
-//        registerReceiver(alarmReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
 
 
         cleanDuplicateImage();
